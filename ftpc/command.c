@@ -58,7 +58,6 @@ void getCommand(int sfd)
 				++flag;
 
 				ret = selectCommand(cmd, sfd);
-				printf("ret = %ld\n", ret);
 				if(cmd != NULL){
 					for(size_t idx = 0; idx != 3; ++idx)
 					{
@@ -275,30 +274,71 @@ size_t float2str(char * buf, off_t size)
 	}
 	
 	buf[len] = buf[len - 1];
-	buf[len - 1] = '.';
+	buf[len - 1] = buf[len - 2];
+	buf[len - 2] = '.';
 	
 	return len + 1;
 }
 
 void convertSize(char * buf, double size)
 {
+	if(size < 1 << 10){ // B
+		buf[float2str(buf, size * 100)] = 'B';
+	}else if(size < 1 << 20){ // K
+		size /= 1 << 10;
+		buf[float2str(buf, size * 100)] = 'K';
+	}else if(size < 1 << 30){ // M
+		size /= 1 << 20;
+		buf[float2str(buf, size * 100)] = 'M';
+	}else{ // G
+		size /= 1 << 30;
+		buf[float2str(buf, size * 100)] = 'G';
+	}
+}
+
+size_t float2strSpeed(char * buf, off_t size)
+{
+	size_t len = 0;
+	off_t tmpSize = size;
+	while(tmpSize != 0)
+	{
+		tmpSize /= 10;
+		++len;
+	}
+	
+	off_t tmp;
+	for(size_t idx = len - 1; size != 0; --idx)
+	{
+		tmp = size % 10;
+		size /= 10;
+		buf[idx] = '0' + tmp;
+	}
+	
+	buf[len] = buf[len - 1];
+	buf[len - 1] = '.';
+	
+	return len + 1;
+}
+
+void convertSizeSpeed(char * buf, double size)
+{
 	size_t idx;
 	if(size < 1 << 10){ // B
-		idx = float2str(buf, size * 10);
+		idx = float2strSpeed(buf, size * 10);
 		buf[idx] = 'B';
 	}else if(size < 1 << 20){ // K
 		size /= 1 << 10;
-		idx = float2str(buf, size * 10);
+		idx = float2strSpeed(buf, size * 10);
 		buf[idx] = 'K';
 		buf[++idx] = 'B';
 	}else if(size < 1 << 30){ // M
 		size /= 1 << 20;
-		idx = float2str(buf, size * 10);
+		idx = float2strSpeed(buf, size * 10);
 		buf[idx] = 'M';
 		buf[++idx] = 'B';
 	}else{ // G
 		size /= 1 << 30;
-		idx = float2str(buf, size * 10);
+		idx = float2strSpeed(buf, size * 10);
 		buf[idx] = 'G';
 		buf[++idx] = 'B';
 	}
@@ -403,7 +443,7 @@ void sighandler(int signum)
 	FLAG = -1;
 }
 
-ssize_t getsFileAgain(int sfd, int fd, off_t sizeFile, int fdTemp, const char * downloadPath, const char * strSizeFile, char * strTotalCur, const char * fileNameDownloading)
+ssize_t getsFileAgain(int sfd, int fd, const char * fileName, off_t sizeFile, int fdTemp, const char * downloadPath, const char * strSizeFile, char * strTotalCur, const char * fileNameDownloading)
 {
 	char ** args = readDownloadingConf(fileNameDownloading);
 
@@ -412,7 +452,7 @@ ssize_t getsFileAgain(int sfd, int fd, off_t sizeFile, int fdTemp, const char * 
 
 	ssize_t ret;
 	if(sizeFile > 100 * 1024 * 1024){ // mmap
-		ret = getsMappingLargeFile(sfd, sizeFile, fd, sizeFileCur, fdTemp, downloadPath, strSizeFile, strTotalCur);
+		ret = getsMappingLargeFile(sfd, sizeFile, fd, fileName, sizeFileCur, fdTemp, downloadPath, strSizeFile, strTotalCur);
 		if(-1 == ret){
 			return -1;
 		}
@@ -444,7 +484,7 @@ ssize_t getsFileAgain(int sfd, int fd, off_t sizeFile, int fdTemp, const char * 
 	return 0;
 }
 
-ssize_t getsMappingLargeFile(int sfd, off_t sizeFile, int fd, off_t sizeFileCur, int fdTemp, const char * downloadPath, const char * strSizeFile, char * strTotalCur)
+ssize_t getsMappingLargeFile(int sfd, off_t sizeFile, int fd, const char * fileName, off_t sizeFileCur, int fdTemp, const char * downloadPath, const char * strSizeFile, char * strTotalCur)
 {
 	if(0 == sizeFileCur){
 		int ret = ftruncate(fd, sizeFile);
@@ -462,6 +502,13 @@ ssize_t getsMappingLargeFile(int sfd, off_t sizeFile, int fd, off_t sizeFileCur,
 
 	off_t totalCur = sizeFileCur;
 	ssize_t retLen = 0;
+	char sizeFileStr[9] = {0};
+	convertSize(sizeFileStr, (double)sizeFile);
+	char totalCurStr[9];
+	char speed[11];
+	time_t begin;
+	time(&begin);
+	time_t cur;
 	while(totalCur < sizeFile)
 	{
 		retLen = recv(sfd, pMmap + totalCur, sizeFile - totalCur, 0);
@@ -473,8 +520,19 @@ ssize_t getsMappingLargeFile(int sfd, off_t sizeFile, int fd, off_t sizeFileCur,
 			return -1;
 		}
 		totalCur += retLen;
-		printf("\rDownloading...%5.2f%%", ((double)totalCur / sizeFile) * 100);
-		fflush(stdout);
+		
+		bzero(totalCurStr, sizeof(totalCurStr));
+		convertSize(totalCurStr, (double)totalCur);
+		time(&cur);
+		if(cur - begin >= 1){
+			begin = cur;
+
+			bzero(speed, sizeof(speed));
+			convertSizeSpeed(speed, (double)retLen);
+			printf("\rdownloading: [%s %s/%s %5.2f%%] %s   ", fileName, totalCurStr, sizeFileStr, ((double)totalCur / sizeFile) * 100, speed);
+			fflush(stdout);
+		}
+		
 		int2str(strTotalCur, totalCur);
 		writeTempConf(fdTemp, downloadPath, strSizeFile, strTotalCur);
 		if(-1 == FLAG || 0 == retLen){
@@ -485,6 +543,7 @@ ssize_t getsMappingLargeFile(int sfd, off_t sizeFile, int fd, off_t sizeFileCur,
 			return -1;
 		}
 	}
+	printf("\rdownload completed: [%s %s/%s %5.2f%%] %s\n", fileName, totalCurStr, sizeFileStr, ((double)totalCur / sizeFile) * 100, "0K/s");
 
 	if(-1 == munmap(pMmap, sizeFile)){
 		perror("munmap");
@@ -494,7 +553,7 @@ ssize_t getsMappingLargeFile(int sfd, off_t sizeFile, int fd, off_t sizeFileCur,
 	return 0;
 }
 
-ssize_t getsFile(int sfd, const char * fileName)//返回值，错误处理（未）
+ssize_t getsFile(int sfd, const char * fileName)
 {
 	signal(SIGINT, sighandler);
 
@@ -532,11 +591,9 @@ ssize_t getsFile(int sfd, const char * fileName)//返回值，错误处理（未
 		int2str(strSizeFile, sizeFile);
 		char strTotalCur[16] = {0};
 
-		printf("Download started\n");
-
 		ssize_t ret;
-		if(2 == inum){
-			ret = getsFileAgain(sfd, fd, sizeFile, fdTemp, downloadPath, strSizeFile, strTotalCur, fileNameDownloading);
+		if(2 == inum){ // select download ways
+			ret = getsFileAgain(sfd, fd, fileName, sizeFile, fdTemp, downloadPath, strSizeFile, strTotalCur, fileNameDownloading);
 			closedir(dir);
 			close(fd);
 			close(fdTemp);
@@ -550,7 +607,7 @@ ssize_t getsFile(int sfd, const char * fileName)//返回值，错误处理（未
 		}
 		
 		if(sizeFile > 100 * 1024 * 1024){ // mmap
-			ret = getsMappingLargeFile(sfd, sizeFile, fd, 0, fdTemp, downloadPath, strSizeFile, strTotalCur);
+			ret = getsMappingLargeFile(sfd, sizeFile, fd, fileName, 0, fdTemp, downloadPath, strSizeFile, strTotalCur);
 			closedir(dir);
 			close(fd);
 			close(fdTemp);
@@ -558,13 +615,19 @@ ssize_t getsFile(int sfd, const char * fileName)//返回值，错误处理（未
 				return -1;
 			}else if(0 == ret){
 				unlink(fileNameDownloading);
-				printf("\nDownload succeeded\n");
 				return 0;
 			}
 		}else{ // download
 			off_t totalCur = 0;
 			ssize_t retLen = 0;
 			char buf[1020];
+			char sizeFileStr[9] = {0};
+			convertSize(sizeFileStr, (double)sizeFile);
+			char totalCurStr[9];
+			char speed[11];
+			time_t begin;
+			time(&begin);
+			time_t cur;
 			while((size_t)totalCur < sizeFile)
 			{
 				bzero(buf, sizeof(buf));
@@ -577,8 +640,19 @@ ssize_t getsFile(int sfd, const char * fileName)//返回值，错误处理（未
 				}
 				retLen = write(fd, buf, ret);
 				totalCur += retLen;
-				printf("\rDownloading...%5.2f%%", ((double)totalCur / sizeFile) * 100);
-				fflush(stdout);
+			
+				bzero(totalCurStr, sizeof(totalCurStr));
+				convertSize(totalCurStr, (double)totalCur);
+				time(&cur);
+				if(cur - begin >= 1){
+					begin = cur;
+
+					bzero(speed, sizeof(speed));
+					convertSizeSpeed(speed, (double)retLen);
+					printf("\rdownloading: [%s %s/%s %5.2f%%] %s   ", fileName, totalCurStr, sizeFileStr, ((double)totalCur / sizeFile) * 100, speed);
+					fflush(stdout);
+				}
+				
 				int2str(strTotalCur, totalCur);
 				writeTempConf(fdTemp, downloadPath, strSizeFile, strTotalCur);
 				if(-1 == FLAG){
@@ -589,7 +663,7 @@ ssize_t getsFile(int sfd, const char * fileName)//返回值，错误处理（未
 			close(fd);
 			close(fdTemp);
 			unlink(fileNameDownloading);
-			printf("\nDownload succeeded\n");
+			printf("\rdownload completed: [%s %s/%s %5.2f%%] %s\n", fileName, totalCurStr, sizeFileStr, ((double)totalCur / sizeFile) * 100, "0K/s");
 		}
 	}
 

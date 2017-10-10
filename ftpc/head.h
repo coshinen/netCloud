@@ -36,7 +36,7 @@ static ssize_t FLAG = 0; // static作用域在单个.c文件中
 
 typedef struct { // 火车模型
 	size_t _len; // 车头，存放车身的长度
-	char _buf[1020]; // 车身，存放要传输的数据
+	char _buf[1024]; // 车身，存放要传输的数据
 } Train_t, * pTrain_t;
 
 int scSocket(char**); // 套接字封装
@@ -59,6 +59,8 @@ ssize_t getMD5(int, off_t, char*);
 size_t int2str(char*, off_t);
 size_t float2str(char*, off_t);
 void convertSize(char*, double);
+size_t float2strSpeed(char*, off_t);
+void convertSizeSpeed(char*, double);
 
 void helpFile(int);
 void print(int);
@@ -66,8 +68,8 @@ void listFiles(int, char**);
 void printWorkingDirectory(int);
 void changeDirectory(int, const char*);
 void writeTempConf(int, const char*, const char*, const char*);
-ssize_t getsFileAgain(int, int, off_t, int, const char*, const char*, char*, const char*);
-ssize_t getsMappingLargeFile(int, off_t, int, off_t, int, const char*, const char*, char*);
+ssize_t getsFileAgain(int, int, const char*, off_t, int, const char*, const char*, char*, const char*);
+ssize_t getsMappingLargeFile(int, off_t, int, const char*, off_t, int, const char*, const char*, char*);
 ssize_t getsFile(int, const char*); // recvData
 ssize_t putsMappingLargeFile(int, off_t, int);
 ssize_t putsFile(int, const char*);

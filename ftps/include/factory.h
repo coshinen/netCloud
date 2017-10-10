@@ -12,7 +12,7 @@
 
 typedef struct { // 火车模型
 	size_t _len; // 车头，存放车身的长度
-	char _buf[1020]; // 车身，存放要传输的数据
+	char _buf[1024]; // 车身，存放要传输的数据
 } Train_t, * pTrain_t;
 
 typedef void * (*pthreadHandler_t)(void*);
