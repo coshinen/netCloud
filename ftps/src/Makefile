@@ -1,4 +1,7 @@
-ftpd: ftps.c preparation.c factory.c taskQue.c threadHandler.c command.c
-	gcc $^ -o $@ -pthread -lcrypt -lcrypto -lmysqlclient -I ../include
+SOURCES:=$(wildcard *.c)
+OBJS:=$(patsubst %.c,%.o,$(SOURCES))
+CFLAGS:= -I ../include
+ftpd:$(OBJS)
+	gcc $^ -o $@ -pthread -lcrypt -lcrypto -lmysqlclient
 clean:
-	rm ftpd
+	rm -rf $(OBJS) ftpd

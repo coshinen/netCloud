@@ -1,4 +1,7 @@
-ftpc: ftpc.c preparation.c command.c
+SOURCES:=$(wildcard *.c)
+OBJS:=$(patsubst %.c,%.o,$(SOURCES))
+CFLAGS:= -I .
+ftpc:$(OBJS)
 	gcc $^ -o $@ -lcrypt -lcrypto
 clean:
-	rm ftpc
+	rm -rf $(OBJS) ftpc

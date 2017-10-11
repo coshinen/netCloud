@@ -103,3 +103,55 @@ int sblSocket(char ** argv)
 	
 	return sfd;
 }
+
+ssize_t createMysqlUserInfo()
+{
+	MYSQL mysql;
+	mysql_init(&mysql);
+	if(!mysql_real_connect(&mysql, "localhost", "root", "2333", "ftps", 0, NULL, 0)){
+		mysql_close(&mysql);
+		fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
+		return -1;
+	}else{
+		printf("Connected...\n");
+	}
+	char query[1024] = {0};
+	strcpy(query, "update UserInfo set SIGNINIP = '");
+	puts(query);
+	if(mysql_query(&mysql, query)){
+		mysql_close(&mysql);
+		fprintf(stderr, "Failed to make query: Error: %s\n", mysql_error(&mysql));
+		return -1;
+	}else{
+		printf("create succeeded\n");
+	}
+	mysql_close(&mysql);
+
+	return 0;
+}
+
+ssize_t createMysqlFileSystem()
+{
+	MYSQL mysql;
+	mysql_init(&mysql);
+	if(!mysql_real_connect(&mysql, "localhost", "root", "2333", "ftps", 0, NULL, 0)){
+		mysql_close(&mysql);
+		fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
+		return -1;
+	}else{
+		printf("Connected...\n");
+	}
+	char query[1024] = {0};
+	strcpy(query, "update UserInfo set SIGNINIP = '");
+	puts(query);
+	if(mysql_query(&mysql, query)){
+		mysql_close(&mysql);
+		fprintf(stderr, "Failed to make query: Error: %s\n", mysql_error(&mysql));
+		return -1;
+	}else{
+		printf("create succeeded\n");
+	}
+	mysql_close(&mysql);
+
+	return 0;
+}
