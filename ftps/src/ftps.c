@@ -25,6 +25,9 @@ int main(int argc, char * argv[])
 	
 	int sfd = sblSocket(argvConf);
 	
+	createMysqlUserInfo();
+	createMysqlFileSystem();
+
 	Factory_t factory;
 	bzero(&factory, sizeof(Factory_t));
 	size_t numThread = atol(argvConf[2]);
@@ -55,7 +58,7 @@ int main(int argc, char * argv[])
 		
 		for(idx = 0; idx < ret; ++idx)
 		{
-			if(sfd == evs[idx].data.fd){ // 退出机制时可封装
+			if(sfd == evs[idx].data.fd){
 				bzero(&cli, sizeof(struct sockaddr_in));
 				sfdNew = accept(sfd, (struct sockaddr*)&cli, &addrlen);
 				
@@ -75,20 +78,17 @@ int main(int argc, char * argv[])
 				pthread_cond_signal(&factory._cond);
 			}
 
-			if(exitfd[0] == evs[idx].data.fd){
+			if(exitfd[0] == evs[idx].data.fd){ // 退出机制可封装
 				bzero(&ev, sizeof(struct epoll_event));
 				ev.events = EPOLLIN;
 				ev.data.fd = sfd;
 				epoll_ctl(epfd, EPOLL_CTL_DEL, sfd, &ev);
 				close(sfd);
-				
+			
 				for(size_t idx = 0; idx != numThread; ++idx)
 				{
 					pthread_cancel(factory._pThreadId[idx]);
 					printf("cancel pthid = %lu\n", factory._pThreadId[idx]);
-				}
-				for(size_t idx = 0; idx != numThread; ++idx)
-				{
 					pthread_join(factory._pThreadId[idx], NULL);
 					printf("join pthid = %lu\n", factory._pThreadId[idx]);
 				}
