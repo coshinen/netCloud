@@ -17,8 +17,8 @@ void factoryInit(pFactory_t pFactory, size_t numThread, pthreadHandler_t threadH
 
 void factoryStart(pFactory_t pFactory)
 {
-	if(0 == pFactory->_flagStart){
-		for(size_t idx = 0; idx != pFactory->_numThread; ++idx)
+	if (0 == pFactory->_flagStart) {
+		for (size_t idx = 0; idx != pFactory->_numThread; ++idx)
 		{
 			pthread_create(pFactory->_pThreadId + idx, NULL, pFactory->_pThreadHandler, pFactory);
 			printf("pthid = %ld\n", pFactory->_pThreadId[idx]);

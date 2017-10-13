@@ -12,7 +12,7 @@ char ** readConf(char * argv[])
 	
 	char ** argvConf = (char**)calloc(3,sizeof(char*));
 	size_t idx;
-	for(idx = 0; idx != 3; ++idx)
+	for (idx = 0; idx != 3; ++idx)
 	{
 		argvConf[idx] = (char*)calloc(1,sizeof(char) * 16);
 	}
@@ -20,23 +20,23 @@ char ** readConf(char * argv[])
 	char buf[1024] = {0};
 	read(fd, buf, sizeof(char) * 1024);
 	
-	for(size_t iConf = 0, jConf = 0, iBuf = 2; iBuf != strlen(buf); ++iBuf)
+	for (size_t iConf = 0, jConf = 0, iBuf = 2; iBuf != strlen(buf); ++iBuf)
 	{
-		if(buf[iBuf - 2] == ' ' && buf[iBuf - 1] == '"'){
-			for(; iBuf != strlen(buf); ++iBuf)
+		if (buf[iBuf - 2] == ' ' && buf[iBuf - 1] == '"') {
+			for (; iBuf != strlen(buf); ++iBuf)
 			{
-				if(buf[iBuf] == '"' && (buf[iBuf + 1] == ',' || buf[iBuf + 1] == '\n')){
+				if (buf[iBuf] == '"' && (buf[iBuf + 1] == ',' || buf[iBuf + 1] == '\n')) {
 					jConf = 0;
 					++iConf;
 					break;
-				}else{
+				} else {
 					argvConf[iConf][jConf] = buf[iBuf];
 					++jConf;
 				}
 			}
 		}
 
-		if(3 == iConf){
+		if (3 == iConf) {
 			break;
 		}
 	}
@@ -47,7 +47,7 @@ char ** readConf(char * argv[])
 
 void getDaemon()
 {
-	if(fork()){ // 创建子进程，父进程退出
+	if (fork()) { // 创建子进程，父进程退出
 		exit(0);
 	}
 	
@@ -59,7 +59,7 @@ void getDaemon()
 
 	chdir("/ftps"); // 切换工作目录到/ftps
 	
-//	for(int idx = 0; idx != 3; ++idx) // 关闭标准输入、输出、错误文件描述符
+//	for (int idx = 0; idx != 3; ++idx) // 关闭标准输入、输出、错误文件描述符
 //	{
 //		close(idx);
 //	}
@@ -74,7 +74,7 @@ void sigHandler(int signum)
 void setExit()
 {
 	pipe(exitfd);
-	if(fork()){
+	if (fork()) {
 		close(exitfd[0]);
 		signal(SIGINT, sigHandler);
 		wait(NULL);
@@ -108,20 +108,20 @@ void createMysqlUserInfo()
 {
 	MYSQL mysql;
 	mysql_init(&mysql);
-	if(!mysql_real_connect(&mysql, "localhost", "root", "2333", "ftps", 0, NULL, 0)){
+	if (!mysql_real_connect(&mysql, "localhost", "root", "2333", "ftps", 0, NULL, 0)) {
 		mysql_close(&mysql);
 		fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
 		return;
-	}else{
+	} else {
 		printf("Connected...\n");
 	}
 	char query[1024] = {0};
 	strcpy(query, "create table UserInfo(UID smallint unsigned primary key AUTO_INCREMENT, USERNAME char(64) not NULL, PASSWD char(98) not NULL, SALT char(11) not NULL, SIGNUPIP char(16) not NULL, SIGNUPDATE datetime not NULL, SIGNINIP char(16) not NULL, SIGNINDATE datetime not NULL)");
-	if(mysql_query(&mysql, query)){
+	if (mysql_query(&mysql, query)) {
 		mysql_close(&mysql);
 		fprintf(stderr, "Failed to make query: Error: %s\n", mysql_error(&mysql));
 		return;
-	}else{
+	} else {
 		printf("create table UserInfo succeeded\n");
 	}
 	mysql_close(&mysql);
@@ -131,20 +131,20 @@ void createMysqlFileSystem()
 {
 	MYSQL mysql;
 	mysql_init(&mysql);
-	if(!mysql_real_connect(&mysql, "localhost", "root", "2333", "ftps", 0, NULL, 0)){
+	if (!mysql_real_connect(&mysql, "localhost", "root", "2333", "ftps", 0, NULL, 0)) {
 		mysql_close(&mysql);
 		fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
 		return;
-	}else{
+	} else {
 		printf("Connected...\n");
 	}
 	char query[1024] = {0};
 	strcpy(query, "create table FileSystem(USERNAME char(64) not NULL, PREINODE mediumint unsigned not NULL, CURINODE mediumint unsigned not NULL unique AUTO_INCREMENT, FILETYPE char(4) not NULL, FILENAME char(64) not NULL, PATH char(255) not NULL, PATHNAME char(255) not NULL primary key, LINKNUMS mediumint unsigned not NULL, MD5 char(32), FILESIZE bigint unsigned not NULL, DATE datetime not NULL, CURSIZE bigint unsigned not NULL)");
-	if(mysql_query(&mysql, query)){
+	if (mysql_query(&mysql, query)) {
 		mysql_close(&mysql);
 		fprintf(stderr, "Failed to make query: Error: %s\n", mysql_error(&mysql));
 		return;
-	}else{
+	} else {
 		printf("create table FileSystem succeeded\n");
 	}
 	mysql_close(&mysql);

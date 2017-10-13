@@ -9,7 +9,7 @@ char bash[256] = {0};
 
 int main(int argc, char * argv[])
 {
-	if(argc != 3){
+	if (argc != 3) {
 		printf("Please enter: ./ftpc IP PORT\n");
 		return -1;
 	}
@@ -29,30 +29,30 @@ Label:
 	char flag = 0;
 
 	ssize_t ret;
-	if(!strcmp("signup", cmd)){
+	if (!strcmp("signup", cmd)) {
 		flag = 2;
 		sendN(sfd, &flag, sizeof(char));
 		
 		ret = signUp(sfd);
-		if(0 == ret){
+		if (0 == ret) {
 			goto Label;
 		}
-	}else if(!strcmp("signin", cmd)){
+	} else if (!strcmp("signin", cmd)) {
 		flag = 1;
 		sendN(sfd, &flag, sizeof(char));
 
 		ret = verifySignInInfo(sfd);
-		if(-1 == ret){
+		if (-1 == ret) {
 			goto LabelExit;
-		}else if(0 == ret){
+		} else if (0 == ret) {
 			getCommand(sfd);
 		}
-	}else if(!strcmp("signout", cmd)){
+	} else if (!strcmp("signout", cmd)) {
 		flag = -1;
 		sendN(sfd, &flag, sizeof(char));
 
 		goto LabelExit;
-	}else{
+	} else {
 		goto Label;
 	}
 LabelExit:
@@ -62,12 +62,12 @@ LabelExit:
 
 void parseCommandStart(char * cmd)
 {
-	for(size_t idx = 0, i = 0; idx != strlen(cmd); ++idx)
+	for (size_t idx = 0, i = 0; idx != strlen(cmd); ++idx)
 	{
-		if(cmd[idx] != ' '){
+		if (cmd[idx] != ' ') {
 			cmd[i] = cmd[idx];
 			++i;
-			if(cmd[idx + 1] == ' ' || cmd[idx + 1] == '\n'){
+			if (cmd[idx + 1] == ' ' || cmd[idx + 1] == '\n') {
 				cmd[i] = 0;
 				break;
 			}
@@ -82,7 +82,7 @@ void getSalt(char * salt, size_t inum)
 	char tmpSalt[2] = {0};
 	int lenStr = strlen(str);;
 	srand((unsigned int)time((time_t*)NULL));
-	for(size_t idx = 0; idx != inum - 3; ++idx)
+	for (size_t idx = 0; idx != inum - 3; ++idx)
 	{
 		sprintf(tmpSalt, "%c", str[(rand()%lenStr)]);
 		strcat(salt, tmpSalt);
@@ -105,12 +105,12 @@ Label:
 	strcpy(train._buf, username);
 	train._len = strlen(train._buf);
 	ret = sendN(sfd, (char*)&train, sizeof(size_t) + train._len);
-	if(-1 == ret){
+	if (-1 == ret) {
 		return -1;
 	}
 	
 	recvN(sfd, &flag, sizeof(char));
-	if(-1 == flag){
+	if (-1 == flag) {
 		printf("The username already exists! Please enter again.\n");
 		goto Label;
 	}
@@ -124,8 +124,8 @@ LabelAgain:
 	bzero(passwordVerify, sizeof(passwordVerify));
 	strcpy(passwordVerify, password);
 	passwordAgain = getpass("Retype new FTPD password: ");
-	if(!strcmp(passwordVerify, passwordAgain)){
-	}else{
+	if (!strcmp(passwordVerify, passwordAgain)) {
+	} else {
 		printf("Sorry, passwords do not match\n"
 				"Please enter again\n");
 		goto LabelAgain;
@@ -140,7 +140,7 @@ LabelAgain:
 	strcpy(train._buf, passwd);
 	train._len = strlen(train._buf);
 	ret = sendN(sfd, (char*)&train, sizeof(size_t) + train._len);
-	if(-1 == ret){
+	if (-1 == ret) {
 		return -1;
 	}
 
@@ -149,13 +149,13 @@ LabelAgain:
 //	sendN(sfd, signupIp, sizeof(signupIp));
 	
 	recvN(sfd, &flag, sizeof(char));
-	if(-2 == flag){
+	if (-2 == flag) {
 		printf("oops! The server was shutdown.\n");
 		return -1;
-	}else if(-1 == flag){
+	} else if (-1 == flag) {
 		printf("Sign up failed!\n");
 		goto Label;
-	}else if(0 == flag){
+	} else if (0 == flag) {
 		printf("Sign up succeeded!\n");
 	}
 
@@ -178,12 +178,12 @@ LabelUsername:
 	strcpy(train._buf, username);	
 	train._len = strlen(train._buf);
 	ret = sendN(sfd, (char*)&train, sizeof(train._len) + train._len);
-	if(-1 == ret){
+	if (-1 == ret) {
 		return -1;
 	}
 
 	recvN(sfd, &flag, sizeof(char));
-	if(-1 == flag){
+	if (-1 == flag) {
 		printf("The username does not exist! Please enter again.\n");
 		goto LabelUsername;
 	}
@@ -205,7 +205,7 @@ LabelPassword:
 	strcpy(train._buf, passwd);
 	train._len = strlen(train._buf);
 	ret = sendN(sfd, (char*)&train, sizeof(train._len) + train._len);
-	if(-1 == ret){
+	if (-1 == ret) {
 		return -1;
 	}
 
@@ -213,10 +213,10 @@ LabelPassword:
 	char signinDateLast[20] = {0};
 	
 	recvN(sfd, &flag, sizeof(char));
-	if(-1 == flag){
+	if (-1 == flag) {
 		printf("Access denied!\n");
 		goto LabelPassword;
-	}else if(0 == flag){
+	} else if (0 == flag) {
 		recvN(sfd, signinIpLast, sizeof(signinIpLast));
 		recvN(sfd, signinDateLast, sizeof(signinDateLast));
 	

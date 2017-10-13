@@ -9,7 +9,7 @@
 int scSocket(char ** argv)
 {
 	int sfd = socket(AF_INET, SOCK_STREAM, 0);
-	if(-1 == sfd){
+	if (-1 == sfd) {
 		printf("socket error: %s\n", strerror(errno));
 		return -1;
 	}
@@ -22,7 +22,7 @@ int scSocket(char ** argv)
 	int ret;
 Label:
 	ret = connect(sfd, (struct sockaddr*)&ser, sizeof(ser));
-	if(-1 == ret){
+	if (-1 == ret) {
 		goto Label;
 	}
 
@@ -35,7 +35,7 @@ ssize_t getLocalIP(int sfd, char * ip)
 	bzero(&ifr, sizeof(struct ifreq));
 	strncpy(ifr.ifr_name, "ens33", sizeof(ifr.ifr_name));
 
-	if(ioctl(sfd, SIOCGIFADDR, &ifr) < 0){
+	if (ioctl(sfd, SIOCGIFADDR, &ifr) < 0) {
 		printf("ioctl error: %s\n", strerror(errno));
 		close(sfd);
 		return -1;
@@ -54,7 +54,7 @@ char ** readDownloadingConf(const char * args)
 	
 	char ** argsConf = (char**)calloc(3,sizeof(char*));
 	size_t idx;
-	for(idx = 0; idx != 3; ++idx)
+	for (idx = 0; idx != 3; ++idx)
 	{
 		argsConf[idx] = (char*)calloc(1,sizeof(char) * 16);
 	}
@@ -62,23 +62,23 @@ char ** readDownloadingConf(const char * args)
 	char buf[1024] = {0};
 	read(fd, buf, sizeof(char) * 1024);
 	
-	for(size_t iConf = 0, jConf = 0, iBuf = 2; iBuf != strlen(buf); ++iBuf)
+	for (size_t iConf = 0, jConf = 0, iBuf = 2; iBuf != strlen(buf); ++iBuf)
 	{
-		if(buf[iBuf - 2] == ' ' && buf[iBuf - 1] == '"'){
-			for(; iBuf != strlen(buf); ++iBuf)
+		if (buf[iBuf - 2] == ' ' && buf[iBuf - 1] == '"') {
+			for (; iBuf != strlen(buf); ++iBuf)
 			{
-				if(buf[iBuf] == '"' && (buf[iBuf + 1] == ',' || buf[iBuf + 1] == '\n')){
+				if (buf[iBuf] == '"' && (buf[iBuf + 1] == ',' || buf[iBuf + 1] == '\n')) {
 					jConf = 0;
 					++iConf;
 					break;
-				}else{
+				} else {
 					argsConf[iConf][jConf] = buf[iBuf];
 					++jConf;
 				}
 			}
 		}
 
-		if(3 == iConf){
+		if (3 == iConf) {
 			break;
 		}
 	}

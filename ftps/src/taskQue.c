@@ -14,10 +14,10 @@ void taskQueInit(pQue_t pQue)
 
 void taskQueInsertTail(pQue_t pQue, pNode_t pNew)
 {
-	if(NULL == pQue->_pHead){
+	if (NULL == pQue->_pHead) {
 		pQue->_pHead = pNew;
 		pQue->_pTail = pNew;
-	}else{
+	} else {
 		pQue->_pTail->_pNext = pNew;
 		pQue->_pTail = pNew;
 	}
@@ -28,7 +28,7 @@ void taskQueGet(pQue_t pQue, pNode_t * pCur)
 {
 	*pCur = pQue->_pHead;
 	pQue->_pHead = pQue->_pHead->_pNext;
-	if(NULL == pQue->_pHead){
+	if (NULL == pQue->_pHead) {
 		pQue->_pTail = NULL;
 	}
 	--pQue->_size;
@@ -37,7 +37,7 @@ void taskQueGet(pQue_t pQue, pNode_t * pCur)
 void taskQueDestory(pQue_t pQue)
 {
 	pNode_t pTemp;
-	while(pQue->_pHead != NULL)
+	while (pQue->_pHead != NULL)
 	{
 		pTemp = pQue->_pHead;
 		pQue->_pHead = pQue->_pHead->_pNext;

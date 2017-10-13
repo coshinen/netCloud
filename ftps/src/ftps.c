@@ -8,13 +8,13 @@
 
 int main(int argc, char * argv[])
 {
-	if(argc != 2){
+	if (argc != 2) {
 		printf("Please enter: sudo ./ftps ../conf/ftps.conf\n");
 		return -1;
 	}
 
 	char ** argvConf = readConf(argv);
-	for(size_t idx = 0; idx != 3; ++idx)
+	for (size_t idx = 0; idx != 3; ++idx)
 	{
 		printf("%s\n",argvConf[idx]);
 	}
@@ -52,13 +52,13 @@ int main(int argc, char * argv[])
 	struct sockaddr_in cli;
 	socklen_t addrlen = sizeof(struct sockaddr_in);
 	pNode_t pNode;
-	while(1)
+	while (1)
 	{
 		ret = epoll_wait(epfd, evs, 2, -1);
 		
-		for(idx = 0; idx < ret; ++idx)
+		for (idx = 0; idx < ret; ++idx)
 		{
-			if(sfd == evs[idx].data.fd){
+			if (sfd == evs[idx].data.fd) {
 				bzero(&cli, sizeof(struct sockaddr_in));
 				sfdNew = accept(sfd, (struct sockaddr*)&cli, &addrlen);
 				
@@ -78,28 +78,28 @@ int main(int argc, char * argv[])
 				pthread_cond_signal(&factory._cond);
 			}
 
-			if(exitfd[0] == evs[idx].data.fd){ // 退出机制可封装
+			if (exitfd[0] == evs[idx].data.fd) { // 退出机制可封装
 				bzero(&ev, sizeof(struct epoll_event));
 				ev.events = EPOLLIN;
 				ev.data.fd = sfd;
 				epoll_ctl(epfd, EPOLL_CTL_DEL, sfd, &ev);
 				close(sfd);
 			
-				for(size_t idx = 0; idx != numThread; ++idx)
+				for (size_t idx = 0; idx != numThread; ++idx)
 				{
 					pthread_cancel(factory._pThreadId[idx]);
 					printf("cancel pthid = %lu\n", factory._pThreadId[idx]);
 					pthread_join(factory._pThreadId[idx], NULL);
 					printf("join pthid = %lu\n", factory._pThreadId[idx]);
 				}
-				//while(1);
+				//while (1);
 				taskQueDestory(&factory._que);
 				goto LabelExit;
 			}
 		}
 	}
 LabelExit:
-	for(idx = 0; idx != 3; ++idx)
+	for (idx = 0; idx != 3; ++idx)
 	{
 		free(argvConf[idx]);
 	}
