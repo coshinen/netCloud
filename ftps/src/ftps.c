@@ -9,7 +9,7 @@
 int main(int argc, char * argv[])
 {
 	if (argc != 2) {
-		printf("Please enter: sudo ./ftps ../conf/ftps.conf\n");
+		printf("Please enter: ./ftps ../conf/ftps.conf\n");
 		return -1;
 	}
 
