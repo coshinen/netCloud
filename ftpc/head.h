@@ -29,10 +29,18 @@
 #include <sys/ioctl.h>
 #include <errno.h>
 #include <sys/sendfile.h>
+#include <pthread.h>
 
 extern char bash[256]; // extern作用域全局
 static size_t idxBash = 0;
 static ssize_t FLAG = 0; // static作用域在单个.c文件中
+static int sfdTmp = -1;
+
+typedef struct {
+	int _sfd, _sfdTmp;
+	char _fileName[64];
+	char _flagCmd;
+} Node_t, * pNode_t;
 
 typedef struct { // 火车模型
 	size_t _len; // 车头，存放车身的长度
@@ -43,15 +51,17 @@ int scSocket(char**); // 套接字封装
 ssize_t getLocalIP(int, char*); // 获取本地IP
 char ** readDownloadingConf(const char*); // 读下载配置文件
 
+void * threadHandler(void*);
+
 void parseCommandStart(char*);
 void getSalt(char*, size_t);
 ssize_t signUp(int);
 ssize_t verifySignInInfo(int); // 验证登录信息
 
-void getCommand(int);
+void getCommand(pNode_t, char**);
 char ** parseCommand(const char*);
 ssize_t verifyCommand(char**); // 参数在服务器端验证
-ssize_t selectCommand(char**, int);
+ssize_t selectCommand(char**, pNode_t);
 
 ssize_t sendN(int, const char*, size_t);
 ssize_t recvN(int, char*, size_t);

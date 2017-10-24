@@ -9,6 +9,7 @@
 void factoryInit(pFactory_t pFactory, size_t numThread, pthreadHandler_t threadHandler)
 {
 	taskQueInit(&pFactory->_que);
+	taskQueInit(&pFactory->_queFile);
 	pthread_cond_init(&pFactory->_cond, NULL);
 	pFactory->_pThreadHandler= threadHandler;
 	pFactory->_pThreadId = (pthread_t*)calloc(numThread, sizeof(pthread_t));

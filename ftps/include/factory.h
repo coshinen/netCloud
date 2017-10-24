@@ -18,7 +18,7 @@ typedef struct { // 火车模型
 typedef void * (*pthreadHandler_t)(void*);
 
 typedef struct {
-	Que_t _que;
+	Que_t _que, _queFile;
 	pthread_cond_t _cond;
 	pthreadHandler_t _pThreadHandler;
 	pthread_t * _pThreadId;

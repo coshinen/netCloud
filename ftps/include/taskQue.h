@@ -18,6 +18,11 @@ typedef struct Node { // 存放网络描述符链式结点
 	size_t _idxLen; // 标识目录尾部的游标/目录长度
 	size_t _inum; // 目录层级
 	size_t _lenDir[16]; // 每级目录的长度（包含/）
+	char _fileName[64];
+	char _flagCmd;
+	char _flagSigninStatus;
+	char _flagSigninProgress;
+	char _flagSignupProgress;
 	struct Node * _pNext;
 } Node_t, * pNode_t;
 
@@ -32,7 +37,10 @@ typedef struct { // 存放网络描述符链式队列
 
 void taskQueInit(pQue_t);
 void taskQueInsertTail(pQue_t, pNode_t);
+void taskQueInsertHead(pQue_t, pNode_t);
 void taskQueGet(pQue_t, pNode_t*);
+void taskQueDelete(pNode_t*, pNode_t*, pNode_t);
+void taskQueModify(pNode_t, int, int);
 void taskQueDestory(pQue_t);
 
 #endif

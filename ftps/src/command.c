@@ -6,51 +6,41 @@
 
 #include "../include/threadHandler.h"
 
-void getCommand(pNode_t pNode)
+ssize_t getCommand(pNode_t pNode, pFactory_t pFactory)
 {
-	int epfd = epoll_create(1);
-	struct epoll_event ev, * evs =
-		(struct epoll_event*)calloc(1, sizeof(struct epoll_event));
-	bzero(&ev, sizeof(struct epoll_event));
-	ev.events = EPOLLIN;
-	ev.data.fd = pNode->_sfdNew;
-	epoll_ctl(epfd, EPOLL_CTL_ADD, pNode->_sfdNew, &ev);
-	
 	Train_t train;
 	char ** cmd;
 	ssize_t ret;
-	while (1)
-	{
-		bzero(&train, sizeof(Train_t));
-		ret = epoll_wait(epfd, evs, 1, -1);
+	bzero(&train, sizeof(Train_t));
 
-		ret = recvN(pNode->_sfdNew, (char*)&train._len, sizeof(size_t));
-		if (0 == ret) {
-			break;
-		} else if (0 == train._len) {
-			continue;
-		}
-		ret = recvN(pNode->_sfdNew, train._buf, train._len);
-		if (0 == ret) {
-			break;
-		}
-		
-		cmd = parseCommand(train._buf);
-
-		syslog(LOG_INFO, "[user] %s [command] %s %s %s\n", pNode->_user, cmd[0], cmd[1], cmd[2]);
-
-		ret = selectCommand(cmd, pNode);
-		
-		for (size_t idx = 0; idx != 3; ++idx)
-		{
-			free(cmd[idx]);
-		}
-		free(cmd);
-		
-		if (-1 == ret) {
-			break;
-		}
+	ret = recvN(pNode->_sfdNew, (char*)&train._len, sizeof(size_t));
+	if (0 == ret) {
+		return -1;
+	} else if (0 == train._len) {
+		return 0;
 	}
+	ret = recvN(pNode->_sfdNew, train._buf, train._len);
+	if (0 == ret) {
+		return -1;
+	}
+	
+	cmd = parseCommand(train._buf);
+
+	syslog(LOG_INFO, "[user] %s [command] %s %s %s\n", pNode->_user, cmd[0], cmd[1], cmd[2]);
+
+	ret = selectCommand(cmd, pNode, pFactory);
+	
+	for (size_t idx = 0; idx != 3; ++idx)
+	{
+		free(cmd[idx]);
+	}
+	free(cmd);
+	
+	if (-1 == ret) {
+		return -1;
+	}
+
+	return 0;
 }
 
 char ** parseCommand(const char * buf)
@@ -98,9 +88,10 @@ void getDate(char * date)
 	sprintf(date, "%d-%02d-%02d %02d:%02d:%02d", 1900 + pgm->tm_year, 1 + pgm->tm_mon, pgm->tm_mday, 8 + pgm->tm_hour, pgm->tm_min, pgm->tm_sec);
 }
 
-ssize_t selectCommand(char ** cmd, pNode_t pNode)
+ssize_t selectCommand(char ** cmd, pNode_t pNode, pFactory_t pFactory)
 {
 	ssize_t flag = 0;
+	pNode_t pCur = (pNode_t)calloc(1, sizeof(Node_t));
 	
 	if (!strcmp("help", *cmd)) {
 		helpFile(pNode);
@@ -111,9 +102,25 @@ ssize_t selectCommand(char ** cmd, pNode_t pNode)
 	} else if (!strcmp("cd", *cmd)) {
 		changeDirectory(pNode, cmd[1]);
 	} else if (!strcmp("gets", *cmd)) {
-		return getsFile(pNode, cmd[1]);
+		bzero(pNode->_fileName, sizeof(pNode->_fileName));
+		strcpy(pNode->_fileName, cmd[1]);
+		pNode->_flagCmd = 'd';
+		memcpy(pCur, pNode, sizeof(Node_t));
+		pthread_mutex_lock(&pFactory->_queFile._mutex);
+		taskQueInsertTail(&pFactory->_queFile, pCur);
+		pthread_mutex_unlock(&pFactory->_queFile._mutex);
+		pthread_cond_signal(&pFactory->_cond);
+		//return getsFile(pNode, cmd[1]);
 	} else if (!strcmp("puts", *cmd)) {
-		return putsFile(pNode, cmd[1]);
+		bzero(pNode->_fileName, sizeof(pNode->_fileName));
+		strcpy(pNode->_fileName, cmd[1]);
+		pNode->_flagCmd = 'u';
+		memcpy(pCur, pNode, sizeof(Node_t));
+		pthread_mutex_lock(&pFactory->_queFile._mutex);
+		taskQueInsertTail(&pFactory->_queFile, pCur);
+		pthread_mutex_unlock(&pFactory->_queFile._mutex);
+		pthread_cond_signal(&pFactory->_cond);
+		//return putsFile(pNode, cmd[1]);
 	} else if (!strcmp("remove", *cmd)) {
 		removeFile(pNode, cmd[1]);
 	} else if (!strcmp("mkdir", *cmd)) {
@@ -336,7 +343,7 @@ void printWorkingDirectory(pNode_t pNode)
 {
 	Train_t train;
 	bzero(&train, sizeof(Train_t));
-	strcpy(train._buf, pNode->_path + 5 + 1 + strlen(pNode->_user));
+	strcpy(train._buf, pNode->_path + strlen(ROOTPATH) + strlen(pNode->_user));
 	
 	if (!strcmp("/", train._buf)) {
 	} else {
@@ -404,9 +411,9 @@ void changeDirectory(pNode_t pNode, char * directory)
 				if (!strncmp("/", directory, 1)) {
 					char pathName[256] = {0};
 					if (!strcmp("/", directory)) {
-						sprintf(pathName, "%s%s", "/ftps/", pNode->_user);
+						sprintf(pathName, "%s%s", ROOTPATH, pNode->_user);
 					} else {
-						sprintf(pathName, "%s%s%s%s", "/ftps/", pNode->_user, "/", directory + 1);
+						sprintf(pathName, "%s%s%s%s", ROOTPATH, pNode->_user, "/", directory + 1);
 					}
 					char type[5] = {0};
 					ssize_t ret = verifyMysqlFileSystem(NULL, type, pathName, NULL, NULL, NULL);
@@ -448,19 +455,19 @@ void changeDirectory(pNode_t pNode, char * directory)
 		pNode->_path[pNode->_idxLen] = 0;
 		--pNode->_inum;
 	} else if (0 == flag) { // cd
-		sprintf(pNode->_path, "%s%s%s", "/ftps/", pNode->_user, "/");
-		pNode->_idxLen = 6 + strlen(pNode->_user) + 1;
+		sprintf(pNode->_path, "%s%s%s", ROOTPATH, pNode->_user, "/");
+		pNode->_idxLen = strlen(ROOTPATH) + strlen(pNode->_user) + 1;
 		pNode->_path[pNode->_idxLen] = 0;
 		pNode->_inum = 0;
 	} else if (3 == flag) { // / / /xx/xxx
 		if (!strcmp("/", directory)) {
-			sprintf(pNode->_path, "%s%s%s", "/ftps/", pNode->_user, "/");
-			pNode->_idxLen = 6 + strlen(pNode->_user) + 1;
+			sprintf(pNode->_path, "%s%s%s", ROOTPATH, pNode->_user, "/");
+			pNode->_idxLen = strlen(ROOTPATH) + strlen(pNode->_user) + 1;
 			pNode->_path[pNode->_idxLen] = 0;
 			pNode->_inum = 0;
 		} else {
-			sprintf(pNode->_path, "%s%s%s%s%s", "/ftps/", pNode->_user, "/", directory + 1, "/");
-			pNode->_idxLen = 6 + strlen(pNode->_user) + 1 + strlen(directory) -1 + 1;
+			sprintf(pNode->_path, "%s%s%s%s%s", ROOTPATH, pNode->_user, "/", directory + 1, "/");
+			pNode->_idxLen = strlen(ROOTPATH) + strlen(pNode->_user) + 1 + strlen(directory) -1 + 1;
 			pNode->_path[pNode->_idxLen] = 0;
 			
 			char tempDirectory[256] = {0};
@@ -571,7 +578,7 @@ ssize_t getsFile(pNode_t pNode, const char * fileName)
 			sendN(pNode->_sfdNew, &flag, sizeof(char));
 
 			char pathNameReal[64] = {0};
-			sprintf(pathNameReal, "%s%s", "/ftps/", md5);
+			sprintf(pathNameReal, "%s%s", ROOTPATH, md5);
 			int fd = open(pathNameReal, O_RDONLY);
 			if (-1 == fd) {
 				return 0;
@@ -728,7 +735,7 @@ ssize_t putsFile(pNode_t pNode, const char * fileName)
 	}
 	
 	char pathNameReal[64] = {0};
-	sprintf(pathNameReal, "%s%s", "/ftps/", md5);
+	sprintf(pathNameReal, "%s%s", ROOTPATH, md5);
 	int fd = open(pathNameReal, O_CREAT | O_RDWR, 0666);
 	
 	off_t sizeFile;
@@ -823,7 +830,7 @@ void removeFile(pNode_t pNode, const char * fileName)
 			
 			if (1 == linkNumsFile) {
 				char pathNameReal[256] = {0};
-				sprintf(pathNameReal, "%s%s", "/ftps/", md5);
+				sprintf(pathNameReal, "%s%s", ROOTPATH, md5);
 				unlink(pathNameReal);
 			} else {
 				--linkNumsFile;

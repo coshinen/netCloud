@@ -6,15 +6,15 @@
 
 #include "head.h"
 
-void getCommand(int sfd)
+void getCommand(pNode_t pNode, char ** argv)
 {
 	int epfd = epoll_create(1);
-	struct epoll_event ev, * evs
-		= (struct epoll_event*)calloc(2, sizeof(struct epoll_event));
+	struct epoll_event ev, evs[2];
 	bzero(&ev, sizeof(struct epoll_event));
 	ev.events = EPOLLIN;
-	ev.data.fd = sfd;
-	epoll_ctl(epfd, EPOLL_CTL_ADD, sfd, &ev);
+	ev.data.fd = pNode->_sfd;
+	epoll_ctl(epfd, EPOLL_CTL_ADD, pNode->_sfd, &ev);
+	bzero(&ev, sizeof(struct epoll_event));
 	ev.events = EPOLLIN;
 	ev.data.fd = 0;
 	epoll_ctl(epfd, EPOLL_CTL_ADD, 0, &ev);
@@ -48,16 +48,16 @@ void getCommand(int sfd)
 					++flag;
 				}
 				
-				sendN(sfd, (char*)&train, sizeof(train._len) + train._len);
+				sendN(pNode->_sfd, (char*)&train, sizeof(train._len) + train._len);
 				if (0 == train._len) {
 					break;
 				}
 			}
 
-			if (sfd == evs[idx].data.fd) {
+			if (pNode->_sfd == evs[idx].data.fd) {
 				++flag;
 
-				ret = selectCommand(cmd, sfd);
+				ret = selectCommand(cmd, pNode);
 				if (cmd != NULL) {
 					for (size_t idx = 0; idx != 3; ++idx)
 					{
@@ -66,6 +66,22 @@ void getCommand(int sfd)
 					free(cmd);
 					cmd = NULL;
 				}
+				if ('d' == pNode->_flagCmd || 'u' == pNode->_flagCmd) {
+					bzero(&ev, sizeof(struct epoll_event));
+					ev.events = EPOLLIN;
+					ev.data.fd = pNode->_sfd;
+					epoll_ctl(epfd, EPOLL_CTL_DEL, pNode->_sfd, &ev);
+
+					sleep(1);
+					pNode->_sfd = scSocket(argv);
+					pNode->_flagCmd = 0;
+					
+					bzero(&ev, sizeof(struct epoll_event));
+					ev.events = EPOLLIN;
+					ev.data.fd = pNode->_sfd;
+					epoll_ctl(epfd, EPOLL_CTL_ADD, pNode->_sfd, &ev);
+				}
+				printf("ret = %ld\n", ret);
 			}
 		}
 		
@@ -141,36 +157,52 @@ ssize_t verifyCommand(char ** cmd)
 	return 0;
 }
 
-ssize_t selectCommand(char ** cmd, int sfd)
+ssize_t selectCommand(char ** cmd, pNode_t pNode)
 {
 	if (NULL == cmd) {
 		return -1;
 	}
 
 	ssize_t flag = 0;
+	pthread_t pthId;
+	pthread_attr_t attr;
 	
 	if (!strcmp("help", *cmd)) {
-		helpFile(sfd);
+		helpFile(pNode->_sfd);
 	} else if (!strcmp("ls", *cmd)) {
-		listFiles(sfd, cmd);
+		listFiles(pNode->_sfd, cmd);
 	} else if (!strcmp("pwd", *cmd)) {
-		printWorkingDirectory(sfd);
+		printWorkingDirectory(pNode->_sfd);
 	} else if (!strcmp("cd", *cmd)) {
-		changeDirectory(sfd, cmd[1]);
+		changeDirectory(pNode->_sfd, cmd[1]);
 	} else if (!strcmp("gets", *cmd)) {
-		return getsFile(sfd, cmd[1]);
+		pNode->_flagCmd = 'd';
+		bzero(pNode->_fileName, sizeof(pNode->_fileName));
+		strcpy(pNode->_fileName, cmd[1]);
+		pNode->_sfdTmp = pNode->_sfd;
+		pthread_attr_init(&attr);
+		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+		pthread_create(&pthId, &attr, threadHandler, pNode);
+		//return getsFile(pNode->_sfd, cmd[1]);
 	} else if (!strcmp("puts", *cmd)) {
-		return putsFile(sfd, cmd[1]);
+		pNode->_flagCmd = 'u';
+		bzero(pNode->_fileName, sizeof(pNode->_fileName));
+		strcpy(pNode->_fileName, cmd[1]);
+		pNode->_sfdTmp = pNode->_sfd;
+		pthread_attr_init(&attr);
+		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+		pthread_create(&pthId, &attr, threadHandler, pNode);
+		//return putsFile(pNode->_sfd, cmd[1]);
 	} else if (!strcmp("remove", *cmd)) {
-		removeFile(sfd, cmd[1]);
+		removeFile(pNode->_sfd, cmd[1]);
 	} else if (!strcmp("mkdir", *cmd)) {
-		makeDirectory(sfd, cmd[1]);
+		makeDirectory(pNode->_sfd, cmd[1]);
 	} else if (!strcmp("rmdir", *cmd)) {
-		removeDirectory(sfd, cmd[1]);
+		removeDirectory(pNode->_sfd, cmd[1]);
 	} else if (!strcmp("rename", *cmd)) {
-		renameFile(sfd, *cmd);
+		renameFile(pNode->_sfd, *cmd);
 	} else if (!strcmp("exit", *cmd) || !strcmp("signout", *cmd)) {
-		flag = signOut(sfd);
+		flag = signOut(pNode->_sfd);
 	}
 	
 	return flag;

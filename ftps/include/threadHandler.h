@@ -13,7 +13,6 @@
 
 void * threadHandler(void*); // 线程行为函数
 
-void getSalt(char*, const char*); // 获取盐值
 ssize_t verifyMysqlUserName(const char*, char*, char*, char*, char*, char*);
 ssize_t insertMysqlUserInfo(const char*, const char*, const char*, const char*, const char*, const char*, const char*);
 ssize_t updateMysqlUserInfo(const char*, const char*, const char*);
@@ -21,12 +20,14 @@ ssize_t verifyMysqlFileSystem(size_t*, char*, char*, size_t*, char*, size_t*);
 ssize_t insertMysqlFileSystem(const char*, size_t, const char*, const char*, const char*, const char*, size_t, const char*, size_t, const char*, size_t);
 ssize_t updateMysqlFileSystem(const char*, const char*, const char*, const size_t*, const char*);
 ssize_t deleteMysqlFileSystem(const char*);
+
+void getSalt(char*, const char*); // 获取盐值
 ssize_t signUp(pNode_t);
 ssize_t verifySignInInfo(pNode_t);
 
-void getCommand(pNode_t);
+ssize_t getCommand(pNode_t, pFactory_t);
 char ** parseCommand(const char*);
-ssize_t selectCommand(char**, pNode_t);
+ssize_t selectCommand(char**, pNode_t, pFactory_t);
 
 ssize_t sendN(int, const char*, size_t);
 ssize_t recvN(int, char*, size_t);

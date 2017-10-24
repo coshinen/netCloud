@@ -37,5 +37,6 @@
 #include <net/if.h>
 #include <sys/ioctl.h>
 #include <time.h>
+#include <libgen.h>
 
 #endif

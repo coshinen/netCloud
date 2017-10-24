@@ -38,11 +38,13 @@
 #include <sys/wait.h>
 
 int exitfd[2]; // 异步拉起同步
+static char * ROOTPATH = "/tmp/ftps/";
 
 char ** readConf(char**); // 读启动配置文件
 void getDaemon(); // 变身守护进程
 void setExit(); // 退出机制
 int sblSocket(char**); // 初始化套接字，socket、bind、listen
+
 void createMysqlUserInfo();
 void createMysqlFileSystem();
 
