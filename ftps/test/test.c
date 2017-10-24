@@ -5,7 +5,7 @@
  ///
  
 #include "head.h"
-
+//dirname/basename
 int main(void)
 {
 	char buf[64] = {0};
