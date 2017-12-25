@@ -16,10 +16,13 @@ int main(int argc, char * argv[])
 	openlog(0, LOG_CONS | LOG_PID, LOG_LOCAL0);
 
 	char ** argvConf = readConf(argv);
+#if 0
+	/* for debug */
 	for (size_t idx = 0; idx != 3; ++idx)
 	{
-		printf("%s\n",argvConf[idx]);
+		printf("%s\n", argvConf[idx]);
 	}
+#endif
 	
 	getDaemon();
 
@@ -95,7 +98,7 @@ int main(int argc, char * argv[])
 				if (pTemp->_sfdNew == evs[idx].data.fd) {
 					pCur = pTemp;
 
-					if (0 == pCur->_flagSigninStatus) {
+					if (0 == pCur->_flagSigninStatus) { // Sign in or Sign up
 						ret = recvN(pCur->_sfdNew, &flag, sizeof(char));
 						if (-1 == ret || 0 == ret) {
 							continue;

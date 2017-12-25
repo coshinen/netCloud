@@ -8,7 +8,7 @@
 
 void taskQueInit(pQue_t pQue)
 {
-	pQue->_capacity = CAP;
+	pQue->_capacity = CAP; // configuration
 	pthread_mutex_init(&pQue->_mutex, NULL);
 }
 
@@ -96,12 +96,12 @@ void taskQueModify(pNode_t pHead, int from, int to)
 
 void taskQueDestory(pQue_t pQue)
 {
-	pNode_t pTemp;
+	pNode_t pTmp;
 	while (pQue->_pHead != NULL)
 	{
-		pTemp = pQue->_pHead;
-		pQue->_pHead = pQue->_pHead->_pNext;
-		free(pTemp);
+		pTmp = pQue->_pHead->_pNext;
+		free(pQue->_pHead);
+		pQue->_pHead = pTmp;
 	}
 	pQue->_pTail = NULL;
 }

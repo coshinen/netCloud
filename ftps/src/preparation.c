@@ -10,11 +10,11 @@ char ** readConf(char * argv[])
 {
 	int fd = open(argv[1], O_RDONLY);
 	
-	char ** argvConf = (char**)calloc(3,sizeof(char*));
+	char ** argvConf = (char**)calloc(3, sizeof(char*));
 	size_t idx;
 	for (idx = 0; idx != 3; ++idx)
 	{
-		argvConf[idx] = (char*)calloc(1,sizeof(char) * 16);
+		argvConf[idx] = (char*)calloc(1, sizeof(char) * 16);
 	}
 	
 	char buf[1024] = {0};
@@ -55,9 +55,9 @@ void getDaemon()
 
 	umask(0); // 设置掩码
 	
-	mkdir("/tmp/ftps", 0775); // 创建工作目录
+	mkdir(ROOTPATH, 0775); // 创建工作目录
 
-	chdir("/tmp/ftps"); // 切换工作目录到/tmp/ftps
+	chdir(ROOTPATH); // 切换工作目录到/tmp/ftps
 	
 //	for (int idx = 0; idx != 3; ++idx) // 关闭标准输入、输出、错误文件描述符
 //	{
