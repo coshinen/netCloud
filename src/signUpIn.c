@@ -4,7 +4,7 @@
  /// @date    2017-10-19 18:05:20
  ///
  
-#include "../include/threadHandler.h"
+#include "threadHandler.h"
 
 void getSalt(char * salt, const char * passwd)
 {

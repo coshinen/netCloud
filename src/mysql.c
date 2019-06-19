@@ -4,7 +4,7 @@
  /// @date    2017-10-19 17:46:44
  ///
  
-#include "../include/threadHandler.h"
+#include "threadHandler.h"
 
 void createMysqlUserInfo()
 {

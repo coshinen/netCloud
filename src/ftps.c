@@ -4,12 +4,12 @@
  /// @date    2017-09-13 11:11:08
  ///
 
-#include "../include/threadHandler.h"
+#include "threadHandler.h"
 
 int main(int argc, char * argv[])
 {
 	if (argc != 2) {
-		printf("Please enter: ./ftps ../conf/ftps.conf\n");
+		printf("Please enter: ./ftps ../ftps.conf\n");
 		return -1;
 	}
 	

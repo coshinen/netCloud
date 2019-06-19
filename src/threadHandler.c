@@ -4,7 +4,7 @@
  /// @date    2017-09-14 21:20:12
  ///
  
-#include "../include/threadHandler.h"
+#include "threadHandler.h"
 
 void cleanupCondMutex(void * p)
 {

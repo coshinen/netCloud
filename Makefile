@@ -1,7 +1,8 @@
 SOURCES:=$(wildcard *.c)
 OBJS:=$(patsubst %.c,%.o,$(SOURCES))
-CFLAGS:= -I ../include
+CFLAGS:= -I .
 ftpd:$(OBJS)
-	gcc $^ -o $@ -pthread -lcrypt -lcrypto -lmysqlclient
+	cd src; gcc $^ -o $@ -pthread -lcrypt -lcrypto -lmysqlclient
+	cd cli; make
 clean:
 	rm -rf $(OBJS) ftpd

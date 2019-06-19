@@ -4,7 +4,7 @@
  /// @date    2017-09-13 11:31:59
  ///
 
-#include "../include/head.h"
+#include "head.h"
 
 char ** readConf(char * argv[])
 {

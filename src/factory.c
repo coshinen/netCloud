@@ -4,7 +4,7 @@
  /// @date    2017-09-14 14:45:24
  ///
 
-#include "../include/factory.h"
+#include "factory.h"
 
 void factoryInit(pFactory_t pFactory, size_t numThread, pthreadHandler_t threadHandler)
 {
