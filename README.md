@@ -32,6 +32,7 @@ Build requirements:
 
 ```
 $ sudo apt install mysql-server mysql-client
+$ sudo apt install libmysqlclient-dev
 ```
 
 ## Usage
