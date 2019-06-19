@@ -2,6 +2,11 @@
 
 A customised protocol cloud storage.
 
+## Todo
+
+- [ ] code refactoring: config system
+- [ ] code merge: server and client - move cli to src
+
 ## To Build
 
 ```
@@ -38,6 +43,6 @@ $ sudo apt install libmysqlclient-dev
 ## Usage
 
 ```
-$ ./ftpd ~/netCloud/ftps.conf
+$ ./ftpd ~/netCloud/ftp.conf
 $ ./ftp-cli
 ```
