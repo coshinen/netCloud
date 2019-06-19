@@ -1,8 +1,8 @@
 INC_DIR:= .
 SRC_DIR:= .
 INS_DIR:= /usr/local/bin
-SRCS:= $(wildcard $(SRC_DIR)/*.cc)
-OBJS:= $(patsubst %.cc, %.o, $(SRCS))
+SRCS:= $(wildcard $(SRC_DIR)/*.c)
+OBJS:= $(patsubst %.c, %.o, $(SRCS))
 
 CXX:= gcc
 
