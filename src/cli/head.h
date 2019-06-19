@@ -37,14 +37,14 @@ static ssize_t FLAG = 0; // static作用域在单个.c文件中
 static int sfdTmp = -1;
 
 typedef struct {
-	int _sfd, _sfdTmp;
-	char _fileName[64];
-	char _flagCmd;
+    int _sfd, _sfdTmp;
+    char _fileName[64];
+    char _flagCmd;
 } Node_t, * pNode_t;
 
 typedef struct { // 火车模型
-	size_t _len; // 车头，存放车身的长度
-	char _buf[1024]; // 车身，存放要传输的数据
+    size_t _len; // 车头，存放车身的长度
+    char _buf[1024]; // 车身，存放要传输的数据
 } Train_t, * pTrain_t;
 
 int scSocket(char**); // 套接字封装

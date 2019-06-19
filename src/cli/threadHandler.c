@@ -8,13 +8,13 @@
 
 void * threadHandler(void * p)
 {
-	pNode_t pNode = (pNode_t)p;
+    pNode_t pNode = (pNode_t)p;
 puts("I am child thread");
 printf("%c\n", pNode->_flagCmd);
-	if ('d' == pNode->_flagCmd) {
-		getsFile(pNode->_sfdTmp, pNode->_fileName);
-	} else if ('u' == pNode->_flagCmd) {
-		putsFile(pNode->_sfdTmp, pNode->_fileName);
-	}
-	pthread_exit(0);
+    if ('d' == pNode->_flagCmd) {
+        getsFile(pNode->_sfdTmp, pNode->_fileName);
+    } else if ('u' == pNode->_flagCmd) {
+        putsFile(pNode->_sfdTmp, pNode->_fileName);
+    }
+    pthread_exit(0);
 }
