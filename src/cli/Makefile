@@ -8,7 +8,7 @@ CXX:= gcc
 
 CXXFLAGS:= $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto
 
-EXE:= ftpc
+EXE:= ftp-cli
 
 $(EXE):$(OBJS)
 	$(CXX) -o $(SRC_DIR)/$(EXE) $(OBJS) $(CXXFLAGS)

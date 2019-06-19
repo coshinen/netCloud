@@ -8,7 +8,7 @@ CXX:= gcc
 
 CXXFLAGS:= $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto -lmysqlclient
 
-EXE:= ftps
+EXE:= ftpd
 
 $(EXE):$(OBJS)
 	$(CXX) -o $(SRC_DIR)/$(EXE) $(OBJS) $(CXXFLAGS)

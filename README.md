@@ -37,6 +37,6 @@ $ sudo apt install mysql-server mysql-client
 ## Usage
 
 ```
-$ ./ftps ~/netCloud/ftps.conf
-$ ./ftpc
+$ ./ftpd ~/netCloud/ftps.conf
+$ ./ftp-cli
 ```
