@@ -1,10 +1,10 @@
  ///
- /// @file    signUpIn.c
+ /// @file    signupin.c
  /// @author  mistydew(mistydew@qq.com)
  /// @date    2017-10-19 18:05:20
  ///
  
-#include "threadHandler.h"
+#include "threadhandler.h"
 
 void getSalt(char * salt, const char * passwd)
 {

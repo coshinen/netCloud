@@ -8,7 +8,7 @@
 #define __FACTORY_H__
 
 #include "head.h"
-#include "taskQue.h"
+#include "taskqueue.h"
 
 typedef struct { // 火车模型
     size_t _len; // 车头，存放车身的长度

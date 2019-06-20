@@ -1,10 +1,10 @@
  ///
- /// @file    taskQue.c
+ /// @file    taskqueue.c
  /// @author  mistydew(mistydew@qq.com)
  /// @date    2017-09-14 18:57:55
  ///
 
-#include "taskQue.h"
+#include "taskqueue.h"
 
 void taskQueInit(pQue_t pQue)
 {

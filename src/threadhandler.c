@@ -1,10 +1,10 @@
  ///
- /// @file    threadHandler.c
+ /// @file    threadhandler.c
  /// @author  mistydew(mistydew@qq.com)
  /// @date    2017-09-14 21:20:12
  ///
  
-#include "threadHandler.h"
+#include "threadhandler.h"
 
 void cleanupCondMutex(void * p)
 {

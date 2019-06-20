@@ -4,7 +4,7 @@
  /// @date    2017-09-13 21:01:03
  ///
 
-#include "threadHandler.h"
+#include "threadhandler.h"
 
 ssize_t getCommand(pNode_t pNode, pFactory_t pFactory)
 {

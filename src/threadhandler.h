@@ -1,5 +1,5 @@
  ///
- /// @file    threadHandler.h
+ /// @file    threadhandler.h
  /// @author  mistydew(mistydew@qq.com)
  /// @date    2017-09-16 14:47:44
  ///
@@ -8,7 +8,7 @@
 #define __THREADHANDLER_H__
 
 #include "head.h"
-#include "taskQue.h"
+#include "taskqueue.h"
 #include "factory.h"
 
 void * threadHandler(void*); // 线程行为函数

@@ -23,7 +23,7 @@ These dependencies are required:
 Library        | Purpose | Description
 ---------------|---------|-------------
 libssl         | Crypto  | Random Number Generation, Elliptic Curve Cryptography
-mysql          | MySQL   | Data storage
+mysql          | MySQL   | Data storage, Cache
 libmysqlclient | MySQL   | Database operating
 
 ## Linux Distribution Specific Instructions
