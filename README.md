@@ -6,6 +6,7 @@ A customised protocol cloud storage.
 
 - [ ] code refactoring: config system
 - [ ] code merge: server and client - move cli to src
+- [ ] code refactoring: replace c with cpp
 
 ## To Build
 
