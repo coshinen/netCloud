@@ -5,6 +5,7 @@ A customised protocol cloud storage.
 ## Todo
 
 - [ ] code refactoring: config system
+- [ ] help message system
 - [ ] code merge: server and client - move cli to src
 - [ ] code refactoring: replace c with cpp
 
