@@ -1,21 +1,16 @@
  ///
- /// @file    ftps.c
+ /// @file    ftpd.c
  /// @author  mistydew(mistydew@qq.com)
  /// @date    2017-09-13 11:11:08
  ///
 
 #include "threadhandler.h"
 
-int main(int argc, char * argv[])
+int AppInit(int argc, char* argv[])
 {
-    if (argc != 2) {
-        printf("Please enter: ./ftpd ../ftp.conf\n");
-        return -1;
-    }
-    
     openlog(0, LOG_CONS | LOG_PID, LOG_LOCAL0);
 
-    char ** argvConf = readConf(argv);
+    char ** argvConf = ParseParameters(argv);
 #if 0
     /* for debug */
     for (size_t idx = 0; idx != 3; ++idx)
@@ -23,13 +18,13 @@ int main(int argc, char * argv[])
         printf("%s\n", argvConf[idx]);
     }
 #endif
-    
+
     getDaemon();
 
     setExit();
-    
+
     int sfd = sblSocket(argvConf);
-    
+
     createMysqlUserInfo();
     createMysqlFileSystem();
 
@@ -38,7 +33,7 @@ int main(int argc, char * argv[])
     size_t numThread = atol(argvConf[2]);
     factoryInit(&factory, numThread, threadHandler);
     factoryStart(&factory);
-    
+
     int epfd = epoll_create(1);
     struct epoll_event ev, evs[2 + numThread];
     bzero(&ev, sizeof(struct epoll_event));
@@ -49,7 +44,7 @@ int main(int argc, char * argv[])
     ev.events = EPOLLIN;
     ev.data.fd = exitfd[0];
     epoll_ctl(epfd, EPOLL_CTL_ADD, exitfd[0], &ev);
-    
+
     int retEp;
     ssize_t idx;
     int sfdNew;
@@ -216,6 +211,16 @@ LabelExit:
     free(argvConf);
     
     closelog();
-    
+
     return 0;
+}
+
+int main(int argc, char* argv[])
+{
+    if (argc != 2) {
+        printf("Please enter: ./ftpd ../ftp.conf\n");
+        return -1;
+    }
+
+    return (AppInit(argc, argv) ? -1 : 0);
 }
