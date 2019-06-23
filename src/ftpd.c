@@ -10,7 +10,7 @@ int AppInit(int argc, char* argv[])
 {
     openlog(0, LOG_CONS | LOG_PID, LOG_LOCAL0);
 
-    char ** argvConf = ParseParameters(argv);
+    char ** argvConf = ReadConfigFile(argv);
 #if 0
     /* for debug */
     for (int idx = 0; idx != 3; ++idx)

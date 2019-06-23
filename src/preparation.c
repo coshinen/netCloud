@@ -6,7 +6,7 @@
 
 #include "head.h"
 
-char ** ParseParameters(char * argv[])
+char ** ReadConfigFile(char * argv[])
 {
     int fd = open(argv[1], O_RDONLY);
 
