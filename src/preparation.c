@@ -9,38 +9,28 @@
 char ** ParseParameters(char * argv[])
 {
     int fd = open(argv[1], O_RDONLY);
-    
+
     char ** argvConf = (char**)calloc(3, sizeof(char*));
     int idx;
     for (idx = 0; idx != 3; ++idx)
     {
         argvConf[idx] = (char*)calloc(1, sizeof(char) * 16);
     }
-    
+
     char buf[1024] = {0};
     read(fd, buf, sizeof(char) * 1024);
-    
-    for (int iConf = 0, jConf = 0, iBuf = 2; iBuf != strlen(buf); ++iBuf)
+
+    for (int idx = 0; idx != strlen(buf); ++idx)
     {
-        if (buf[iBuf - 2] == ' ' && buf[iBuf - 1] == '"') {
-            for (; iBuf != strlen(buf); ++iBuf)
+        if (buf[idx] = '=') {
+            ++idx;
+            for (int x = 0, y =0; buf[idx] !='\n'; ++idx, ++x)
             {
-                if (buf[iBuf] == '"' && (buf[iBuf + 1] == ',' || buf[iBuf + 1] == '\n')) {
-                    jConf = 0;
-                    ++iConf;
-                    break;
-                } else {
-                    argvConf[iConf][jConf] = buf[iBuf];
-                    ++jConf;
-                }
+                argvConf[y][x] = buf[idx];
             }
         }
-
-        if (3 == iConf) {
-            break;
-        }
     }
-    
+
     close(fd);
     return argvConf;
 }
