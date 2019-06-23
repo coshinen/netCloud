@@ -233,7 +233,7 @@ int insertMysqlFileSystem(const char * userName, int preInode, const char * file
         printf("Connected...\n");
     }
     char query[1024] = {0};
-    sprintf(query, "%s%s%s%lu%s%s%s%s%s%s%s%s%s%lu%s%s%s%lu%s%s%s%lu%s", "insert into FileSystem(USERNAME, PREINODE, FILETYPE, FILENAME, PATH, PATHNAME, LINKNUMS, MD5, FILESIZE, DATE, CURSIZE) values('", userName, "', ", preInode, ", '", fileType, "', '", fileName, "', '", path, "', '", pathName, "',", linkNums, ", '", md5, "', ", fileSize, ", '", date, "', ", curSize, ")");
+    sprintf(query, "%s%s%s%d%s%s%s%s%s%s%s%s%s%d%s%s%s%d%s%s%s%d%s", "insert into FileSystem(USERNAME, PREINODE, FILETYPE, FILENAME, PATH, PATHNAME, LINKNUMS, MD5, FILESIZE, DATE, CURSIZE) values('", userName, "', ", preInode, ", '", fileType, "', '", fileName, "', '", path, "', '", pathName, "',", linkNums, ", '", md5, "', ", fileSize, ", '", date, "', ", curSize, ")");
     puts(query);
     if (mysql_query(&mysql, query)) {
         mysql_close(&mysql);
@@ -285,7 +285,7 @@ int updateMysqlFileSystem(const char * newFileName, const char * newPathName, co
     }
     if (oldPathName != NULL && linkNums != NULL) {
         bzero(query, sizeof(query));
-        sprintf(query, "%s%lu%s%s%s", "update FileSystem set LINKNUMS = ", *linkNums, " where PATHNAME = '", oldPathName, "'");
+        sprintf(query, "%s%d%s%s%s", "update FileSystem set LINKNUMS = ", *linkNums, " where PATHNAME = '", oldPathName, "'");
         puts(query);
         if (mysql_query(&mysql, query)) {
             mysql_close(&mysql);
@@ -297,7 +297,7 @@ int updateMysqlFileSystem(const char * newFileName, const char * newPathName, co
     }
     if (md5 != NULL && linkNums != NULL) {
         bzero(query, sizeof(query));
-        sprintf(query, "%s%lu%s%s%s", "update FileSystem set LINKNUMS = ", *linkNums, " where MD5 = '", md5, "'");
+        sprintf(query, "%s%d%s%s%s", "update FileSystem set LINKNUMS = ", *linkNums, " where MD5 = '", md5, "'");
         puts(query);
         if (mysql_query(&mysql, query)) {
             mysql_close(&mysql);

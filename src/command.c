@@ -497,7 +497,6 @@ int getsFileAgain(pNode_t pNode, int fd, off_t fileSize)
 {
     off_t fileSizeCur;
     recvN(pNode->_sfdNew, (char*)&fileSizeCur, sizeof(off_t));
-printf("fileSizeCur = %ld\n", fileSizeCur);
     
     int ret;
     if (fileSize > 100 * 1024 * 1024) { // mmap

@@ -81,7 +81,7 @@ void getCommand(pNode_t pNode, char ** argv)
                     ev.data.fd = pNode->_sfd;
                     epoll_ctl(epfd, EPOLL_CTL_ADD, pNode->_sfd, &ev);
                 }
-                printf("ret = %ld\n", ret);
+                printf("ret = %d\n", ret);
             }
         }
         

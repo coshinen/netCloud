@@ -22,7 +22,7 @@ void factoryStart(pFactory_t pFactory)
         for (int idx = 0; idx != pFactory->_numThread; ++idx)
         {
             pthread_create(pFactory->_pThreadId + idx, NULL, pFactory->_pThreadHandler, pFactory);
-            printf("pthid = %ld\n", pFactory->_pThreadId[idx]);
+            printf("pthid = %lu\n", pFactory->_pThreadId[idx]);
         }
         pFactory->_flagStart = 1;
     }
