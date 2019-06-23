@@ -22,7 +22,7 @@ void getCommand(pNode_t pNode, char ** argv)
     int retEpoll, idx;
     Train_t train;
     char ** cmd = NULL;
-    ssize_t ret;
+    int ret;
     char flag = 0;
     idxBash = strlen(bash);
     while (1)
@@ -59,7 +59,7 @@ void getCommand(pNode_t pNode, char ** argv)
 
                 ret = selectCommand(cmd, pNode);
                 if (cmd != NULL) {
-                    for (size_t idx = 0; idx != 3; ++idx)
+                    for (int idx = 0; idx != 3; ++idx)
                     {
                         free(cmd[idx]);
                     }
@@ -99,13 +99,13 @@ char ** parseCommand(const char * buf)
     }
 
     char ** cmd = (char**)calloc(3, sizeof(char*));
-    size_t idx;
+    int idx;
     for (idx = 0; idx != 3; ++idx)
     {
         cmd[idx] = (char*)calloc(1, sizeof(char) * 64);
     }
     
-    size_t iBuf;
+    int iBuf;
     for (iBuf = 0; iBuf != strlen(buf); ++iBuf)
     {
         if (buf[iBuf] != ' ') {
@@ -114,7 +114,7 @@ char ** parseCommand(const char * buf)
     }
 
     idx = 0;
-    for (size_t jCmd = 0; iBuf != strlen(buf); ++iBuf)
+    for (int jCmd = 0; iBuf != strlen(buf); ++iBuf)
     {
         if (buf[iBuf] != ' ') {
             cmd[idx][jCmd] = buf[iBuf];
@@ -133,7 +133,7 @@ char ** parseCommand(const char * buf)
     return cmd;
 }
 
-ssize_t verifyCommand(char ** cmd)
+int verifyCommand(char ** cmd)
 {
     if (NULL == cmd) {
         return -1;
@@ -157,13 +157,13 @@ ssize_t verifyCommand(char ** cmd)
     return 0;
 }
 
-ssize_t selectCommand(char ** cmd, pNode_t pNode)
+int selectCommand(char ** cmd, pNode_t pNode)
 {
     if (NULL == cmd) {
         return -1;
     }
 
-    ssize_t flag = 0;
+    int flag = 0;
     pthread_t pthId;
     pthread_attr_t attr;
     
@@ -208,13 +208,13 @@ ssize_t selectCommand(char ** cmd, pNode_t pNode)
     return flag;
 }
 
-ssize_t sendN(int sfd, const char * train, size_t len)
+int sendN(int sfd, const char * train, int len)
 {
-    ssize_t total = 0;
-    ssize_t ret;
-    while ((size_t)total < len)
+    int total = 0;
+    int ret;
+    while ((int)total < len)
     {
-        ret = send(sfd, train + total, len - (size_t)total, 0);
+        ret = send(sfd, train + total, len - (int)total, 0);
         if (-1 == ret) {
             return -1;
         }
@@ -223,13 +223,13 @@ ssize_t sendN(int sfd, const char * train, size_t len)
     return total;
 }
 
-ssize_t recvN(int sfd, char * train, size_t len)
+int recvN(int sfd, char * train, int len)
 {
-    ssize_t total = 0;
-    ssize_t ret;
-    while ((size_t)total < len)
+    int total = 0;
+    int ret;
+    while ((int)total < len)
     {
-        ret = recv(sfd, train + total, len - (size_t)total, 0);
+        ret = recv(sfd, train + total, len - (int)total, 0);
         if (-1 == ret) {
             perror("recv");
             return -1;
@@ -241,7 +241,7 @@ ssize_t recvN(int sfd, char * train, size_t len)
     return total;
 }
 
-ssize_t getMD5(int fd, off_t sizeFile, char * md5)
+int getMD5(int fd, off_t sizeFile, char * md5)
 {
     unsigned char * pMmap = (unsigned char*)mmap(NULL, sizeFile, PROT_READ, MAP_SHARED, fd, 0);
     if (MAP_FAILED == (void*)pMmap) {
@@ -252,7 +252,7 @@ ssize_t getMD5(int fd, off_t sizeFile, char * md5)
     unsigned char md[16];
     MD5(pMmap, sizeFile, md);
     char temp[3] = {0};
-    for (size_t idx = 0; idx != 16; ++idx)
+    for (int idx = 0; idx != 16; ++idx)
     {
         sprintf(temp, "%2.2x", md[idx]);
         strcat(md5, temp);
@@ -266,9 +266,9 @@ ssize_t getMD5(int fd, off_t sizeFile, char * md5)
     return 0;
 }
 
-size_t int2str(char * buf, off_t size)
+int int2str(char * buf, off_t size)
 {
-    size_t len = 0;
+    int len = 0;
     off_t tmpSize = size;
     while (tmpSize != 0)
     {
@@ -277,7 +277,7 @@ size_t int2str(char * buf, off_t size)
     }
     
     off_t tmp;
-    for (size_t idx = len - 1; size != 0; --idx)
+    for (int idx = len - 1; size != 0; --idx)
     {
         tmp = size % 10;
         size /= 10;
@@ -287,9 +287,9 @@ size_t int2str(char * buf, off_t size)
     return len;
 }
 
-size_t float2str(char * buf, off_t size)
+int float2str(char * buf, off_t size)
 {
-    size_t len = 0;
+    int len = 0;
     off_t tmpSize = size;
     while (tmpSize != 0)
     {
@@ -298,7 +298,7 @@ size_t float2str(char * buf, off_t size)
     }
     
     off_t tmp;
-    for (size_t idx = len - 1; size != 0; --idx)
+    for (int idx = len - 1; size != 0; --idx)
     {
         tmp = size % 10;
         size /= 10;
@@ -328,9 +328,9 @@ void convertSize(char * buf, double size)
     }
 }
 
-size_t float2strSpeed(char * buf, off_t size)
+int float2strSpeed(char * buf, off_t size)
 {
-    size_t len = 0;
+    int len = 0;
     off_t tmpSize = size;
     while (tmpSize != 0)
     {
@@ -339,7 +339,7 @@ size_t float2strSpeed(char * buf, off_t size)
     }
     
     off_t tmp;
-    for (size_t idx = len - 1; size != 0; --idx)
+    for (int idx = len - 1; size != 0; --idx)
     {
         tmp = size % 10;
         size /= 10;
@@ -354,7 +354,7 @@ size_t float2strSpeed(char * buf, off_t size)
 
 void convertSizeSpeed(char * buf, double size)
 {
-    size_t idx;
+    int idx;
     if (size < 1 << 10) { // B
         idx = float2strSpeed(buf, size * 10);
         buf[idx] = 'B';
@@ -402,7 +402,7 @@ void print(int sfd)
     while (1)
     {
         bzero(&train, sizeof(Train_t));
-        recvN(sfd, (char*)&train._len, sizeof(size_t));
+        recvN(sfd, (char*)&train._len, sizeof(int));
         if (train._len != 0) {
             recvN(sfd, train._buf, train._len);
             printf("%s\n", train._buf);
@@ -441,7 +441,7 @@ void changeDirectory(int sfd, const char * directory)
         while (1)
         {
             bzero(&train, sizeof(Train_t));
-            recvN(sfd, (char*)&train._len, sizeof(size_t));
+            recvN(sfd, (char*)&train._len, sizeof(int));
             if (train._len != 0) {
                 recvN(sfd, train._buf, train._len);
                 printf("%s\n", train._buf);
@@ -475,14 +475,14 @@ void sighandler(int signum)
     FLAG = -1;
 }
 
-ssize_t getsFileAgain(int sfd, int fd, const char * fileName, off_t sizeFile, int fdTemp, const char * downloadPath, const char * strSizeFile, char * strTotalCur, const char * fileNameDownloading)
+int getsFileAgain(int sfd, int fd, const char * fileName, off_t sizeFile, int fdTemp, const char * downloadPath, const char * strSizeFile, char * strTotalCur, const char * fileNameDownloading)
 {
     char ** args = readDownloadingConf(fileNameDownloading);
 
     off_t sizeFileCur = atol(args[2]);
     sendN(sfd, (char*)&sizeFileCur, sizeof(off_t));
 
-    ssize_t ret;
+    int ret;
     if (sizeFile > 100 * 1024 * 1024) { // mmap
         ret = getsMappingLargeFile(sfd, sizeFile, fd, fileName, sizeFileCur, fdTemp, downloadPath, strSizeFile, strTotalCur);
         if (-1 == ret) {
@@ -492,7 +492,7 @@ ssize_t getsFileAgain(int sfd, int fd, const char * fileName, off_t sizeFile, in
     } else {
         lseek(fd, sizeFileCur, SEEK_SET);
         off_t totalCur = sizeFileCur;
-        ssize_t retLen = 0;
+        int retLen = 0;
         char buf[1020];
         while (totalCur < sizeFile)
         {
@@ -516,7 +516,7 @@ ssize_t getsFileAgain(int sfd, int fd, const char * fileName, off_t sizeFile, in
     return 0;
 }
 
-ssize_t getsMappingLargeFile(int sfd, off_t sizeFile, int fd, const char * fileName, off_t sizeFileCur, int fdTemp, const char * downloadPath, const char * strSizeFile, char * strTotalCur)
+int getsMappingLargeFile(int sfd, off_t sizeFile, int fd, const char * fileName, off_t sizeFileCur, int fdTemp, const char * downloadPath, const char * strSizeFile, char * strTotalCur)
 {
     if (0 == sizeFileCur) {
         int ret = ftruncate(fd, sizeFile);
@@ -533,7 +533,7 @@ ssize_t getsMappingLargeFile(int sfd, off_t sizeFile, int fd, const char * fileN
     }
 
     off_t totalCur = sizeFileCur;
-    ssize_t retLen = 0;
+    int retLen = 0;
     char sizeFileStr[9] = {0};
     convertSize(sizeFileStr, (double)sizeFile);
     char totalCurStr[9];
@@ -585,7 +585,7 @@ ssize_t getsMappingLargeFile(int sfd, off_t sizeFile, int fd, const char * fileN
     return 0;
 }
 
-ssize_t getsFile(int sfd, const char * fileName)
+int getsFile(int sfd, const char * fileName)
 {
     signal(SIGINT, sighandler);
 
@@ -596,8 +596,8 @@ ssize_t getsFile(int sfd, const char * fileName)
     } else if (4 ==flag) {
         printf("gets: failed to gets '%s': Is a directory\n", fileName);
     } else if (8 == flag) {
-        size_t sizeFile;
-        recvN(sfd, (char*)&sizeFile, sizeof(size_t));
+        int sizeFile;
+        recvN(sfd, (char*)&sizeFile, sizeof(int));
     
         char * path = getcwd(NULL, 0); // open preparation
         char downloadPath[1024] = {0};
@@ -623,7 +623,7 @@ ssize_t getsFile(int sfd, const char * fileName)
         int2str(strSizeFile, sizeFile);
         char strTotalCur[16] = {0};
 
-        ssize_t ret;
+        int ret;
         if (2 == inum) { // select download ways
             ret = getsFileAgain(sfd, fd, fileName, sizeFile, fdTemp, downloadPath, strSizeFile, strTotalCur, fileNameDownloading);
             closedir(dir);
@@ -651,7 +651,7 @@ ssize_t getsFile(int sfd, const char * fileName)
             }
         } else { // download
             off_t totalCur = 0;
-            ssize_t retLen = 0;
+            int retLen = 0;
             char buf[1020];
             char sizeFileStr[9] = {0};
             convertSize(sizeFileStr, (double)sizeFile);
@@ -660,7 +660,7 @@ ssize_t getsFile(int sfd, const char * fileName)
             time_t begin;
             time(&begin);
             time_t cur;
-            while ((size_t)totalCur < sizeFile)
+            while ((int)totalCur < sizeFile)
             {
                 bzero(buf, sizeof(buf));
                 ret = recv(sfd, buf, sizeof(buf), 0);
@@ -702,7 +702,7 @@ ssize_t getsFile(int sfd, const char * fileName)
     return 0;
 }
 
-ssize_t putsMappingLargeFile(int sfd, off_t sizeFile, int fd)
+int putsMappingLargeFile(int sfd, off_t sizeFile, int fd)
 {
     char * pMmap = (char*)mmap(NULL, sizeFile, PROT_READ, MAP_SHARED, fd, 0);
     if (MAP_FAILED == (void*)pMmap) {
@@ -711,7 +711,7 @@ ssize_t putsMappingLargeFile(int sfd, off_t sizeFile, int fd)
     }
     
     off_t totalCur = 0;
-    ssize_t retLen = 0;
+    int retLen = 0;
     while (totalCur < sizeFile)
     {
         retLen = send(sfd, pMmap + totalCur, sizeFile - totalCur, 0);
@@ -735,7 +735,7 @@ ssize_t putsMappingLargeFile(int sfd, off_t sizeFile, int fd)
     return 0;
 }
 
-ssize_t putsFile(int sfd, const char * fileName)
+int putsFile(int sfd, const char * fileName)
 {
     char flag = -1;
     recvN(sfd, &flag, sizeof(char));
@@ -776,7 +776,7 @@ ssize_t putsFile(int sfd, const char * fileName)
         return 0;
     }
 
-    ssize_t ret = sendN(sfd, (char*)&st.st_size, sizeof(off_t));
+    int ret = sendN(sfd, (char*)&st.st_size, sizeof(off_t));
     if (-1 == ret) {
         close(fd);
         return -1;
@@ -791,10 +791,10 @@ ssize_t putsFile(int sfd, const char * fileName)
         }
     } else {
         off_t totalCur = 0; // upload
-        ssize_t retLen = 0;
+        int retLen = 0;
         while (totalCur < st.st_size)
         {
-            retLen = sendfile(sfd, fd, &totalCur, (size_t)st.st_size - (size_t)totalCur);
+            retLen = sendfile(sfd, fd, &totalCur, (int)st.st_size - (int)totalCur);
             if (-1 == retLen) {
                 close(fd);
                 return -1;
@@ -884,9 +884,9 @@ void renameFile(int sfd, char * fileName)
     }
 }
 
-ssize_t signOut(int sfd)
+int signOut(int sfd)
 {
-    ssize_t flag = 0;
-    recvN(sfd, (char*)&flag, sizeof(ssize_t));
+    int flag = 0;
+    recvN(sfd, (char*)&flag, sizeof(int));
     return flag;
 }

@@ -52,9 +52,9 @@ void createMysqlFileSystem()
     mysql_close(&mysql);
 }
 
-ssize_t verifyMysqlUserName(const char * userName, char * passwd, char * salt, char * signupDate, char * signinIp, char * signinDate)
+int verifyMysqlUserName(const char * userName, char * passwd, char * salt, char * signupDate, char * signinIp, char * signinDate)
 {
-    ssize_t flag = -1;
+    int flag = -1;
     MYSQL mysql;
     mysql_init(&mysql);
     if (!mysql_real_connect(&mysql, "localhost", "root", "2333", "ftps", 0, NULL, 0)) {
@@ -99,7 +99,7 @@ ssize_t verifyMysqlUserName(const char * userName, char * passwd, char * salt, c
     return flag;
 }
 
-ssize_t insertMysqlUserInfo(const char * userName, const char * passwd, const char * salt, const char * signupIp, const char * signupDate, const char * signinIp, const char * signinDate)
+int insertMysqlUserInfo(const char * userName, const char * passwd, const char * salt, const char * signupIp, const char * signupDate, const char * signinIp, const char * signinDate)
 {
     MYSQL mysql;
     mysql_init(&mysql);
@@ -125,7 +125,7 @@ ssize_t insertMysqlUserInfo(const char * userName, const char * passwd, const ch
     return 0;
 }
 
-ssize_t updateMysqlUserInfo(const char * userName, const char * signinIp, const char * signinDate)
+int updateMysqlUserInfo(const char * userName, const char * signinIp, const char * signinDate)
 {
     MYSQL mysql;
     mysql_init(&mysql);
@@ -161,9 +161,9 @@ ssize_t updateMysqlUserInfo(const char * userName, const char * signinIp, const 
     return 0;
 }
 
-ssize_t verifyMysqlFileSystem(size_t * curInode, char * fileType, char * pathName, size_t * linkNums, char * md5, size_t * fileSize)
+int verifyMysqlFileSystem(int * curInode, char * fileType, char * pathName, int * linkNums, char * md5, int * fileSize)
 {
-    ssize_t flag = -1;
+    int flag = -1;
     MYSQL mysql;
     mysql_init(&mysql);
     if (!mysql_real_connect(&mysql, "localhost", "root", "2333", "ftps", 0, NULL, 0)) {
@@ -186,19 +186,19 @@ ssize_t verifyMysqlFileSystem(size_t * curInode, char * fileType, char * pathNam
             {
                 if (pathName != NULL) {
                     if (curInode != NULL && !strcmp(row[6], pathName)) {
-                        *curInode = (size_t)atol(row[2]);
+                        *curInode = (int)atol(row[2]);
                     }
                     if (fileType != NULL && !strcmp(row[6], pathName)) {
                         strcpy(fileType, row[3]);
                     }
                     if (linkNums != NULL && !strcmp(row[6], pathName)) {
-                        *linkNums = (size_t)atol(row[7]);
+                        *linkNums = (int)atol(row[7]);
                     }
                     if (md5 != NULL && !strcmp(row[6], pathName)) {
                         strcpy(md5, row[8]);
                     }
                     if (fileSize != NULL && !strcmp(row[6], pathName)) {
-                        *fileSize = (size_t)atol(row[9]);
+                        *fileSize = (int)atol(row[9]);
                     }
                     if (!strcmp(row[6], pathName)) {
                         flag = 0;
@@ -206,8 +206,8 @@ ssize_t verifyMysqlFileSystem(size_t * curInode, char * fileType, char * pathNam
                     }
                 }
                 if (md5 != NULL && !strcmp(row[8], md5) && fileSize != NULL && linkNums != NULL) {
-                    *linkNums = (size_t)atol(row[7]);
-                    *fileSize = (size_t)atol(row[9]);
+                    *linkNums = (int)atol(row[7]);
+                    *fileSize = (int)atol(row[9]);
                     
                     flag = 0;
                     break;
@@ -221,7 +221,7 @@ ssize_t verifyMysqlFileSystem(size_t * curInode, char * fileType, char * pathNam
     return flag;
 }
 
-ssize_t insertMysqlFileSystem(const char * userName, size_t preInode, const char * fileType, const char * fileName, const char * path, const char * pathName, size_t linkNums, const char * md5, size_t fileSize, const char * date, size_t curSize)
+int insertMysqlFileSystem(const char * userName, int preInode, const char * fileType, const char * fileName, const char * path, const char * pathName, int linkNums, const char * md5, int fileSize, const char * date, int curSize)
 {
     MYSQL mysql;
     mysql_init(&mysql);
@@ -247,7 +247,7 @@ ssize_t insertMysqlFileSystem(const char * userName, size_t preInode, const char
     return 0;
 }
 
-ssize_t updateMysqlFileSystem(const char * newFileName, const char * newPathName, const char * oldPathName, const size_t * linkNums, const char * md5)
+int updateMysqlFileSystem(const char * newFileName, const char * newPathName, const char * oldPathName, const int * linkNums, const char * md5)
 {
     MYSQL mysql;
     mysql_init(&mysql);
@@ -312,7 +312,7 @@ ssize_t updateMysqlFileSystem(const char * newFileName, const char * newPathName
     return 0;
 }
 
-ssize_t deleteMysqlFileSystem(const char * pathName)
+int deleteMysqlFileSystem(const char * pathName)
 {
     MYSQL mysql;
     mysql_init(&mysql);

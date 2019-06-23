@@ -13,7 +13,7 @@ int AppInit(int argc, char* argv[])
     char ** argvConf = ParseParameters(argv);
 #if 0
     /* for debug */
-    for (size_t idx = 0; idx != 3; ++idx)
+    for (int idx = 0; idx != 3; ++idx)
     {
         printf("%s\n", argvConf[idx]);
     }
@@ -30,7 +30,7 @@ int AppInit(int argc, char* argv[])
 
     Factory_t factory;
     bzero(&factory, sizeof(Factory_t));
-    size_t numThread = atol(argvConf[2]);
+    int numThread = atol(argvConf[2]);
     factoryInit(&factory, numThread, threadHandler);
     factoryStart(&factory);
 
@@ -46,14 +46,14 @@ int AppInit(int argc, char* argv[])
     epoll_ctl(epfd, EPOLL_CTL_ADD, exitfd[0], &ev);
 
     int retEp;
-    ssize_t idx;
+    int idx;
     int sfdNew;
     struct sockaddr_in cli;
     socklen_t addrlen = sizeof(struct sockaddr_in);
     pNode_t pNode;
     pNode_t pTemp, pCur;
     char flag;
-    ssize_t ret;
+    int ret;
     while (1)
     {
         pTemp = factory._que._pHead;
@@ -190,7 +190,7 @@ int AppInit(int argc, char* argv[])
                 epoll_ctl(epfd, EPOLL_CTL_DEL, sfd, &ev);
                 close(sfd);
             
-                for (size_t idx = 0; idx != numThread; ++idx)
+                for (int idx = 0; idx != numThread; ++idx)
                 {
                     pthread_cancel(factory._pThreadId[idx]);
                     printf("cancel pthid = %lu\n", factory._pThreadId[idx]);

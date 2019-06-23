@@ -8,7 +8,7 @@
 
 void getSalt(char * salt, const char * passwd)
 {
-    size_t idx, i$;
+    int idx, i$;
     for (idx = 0, i$ = 0; i$ != 3 && idx != strlen(passwd); ++idx)
     {
         if (passwd[idx] == '$') {
@@ -18,15 +18,15 @@ void getSalt(char * salt, const char * passwd)
     strncpy(salt, passwd, idx - 1);
 }
 
-ssize_t signUp(pNode_t pNode)
+int signUp(pNode_t pNode)
 {
-    ssize_t ret;
+    int ret;
     char flag;
     Train_t train;
     if (0 == pNode->_flagSignupProgress) {
         flag = 0;
         bzero(&train, sizeof(Train_t));
-        ret = recvN(pNode->_sfdNew, (char*)&train._len, sizeof(size_t));
+        ret = recvN(pNode->_sfdNew, (char*)&train._len, sizeof(int));
         if (-1 == ret || 0 == ret) {
             return -1;
         }
@@ -51,7 +51,7 @@ ssize_t signUp(pNode_t pNode)
         pNode->_flagSignupProgress = 1;
     } else if (1 == pNode->_flagSignupProgress) {
         bzero(&train, sizeof(Train_t));
-        ret = recvN(pNode->_sfdNew, (char*)&train._len, sizeof(size_t));
+        ret = recvN(pNode->_sfdNew, (char*)&train._len, sizeof(int));
         if (-1 == ret || 0 == ret) {
             return -1;
         }
@@ -87,10 +87,10 @@ ssize_t signUp(pNode_t pNode)
     return 0;
 }
 
-ssize_t verifySignInInfo(pNode_t pNode)
+int verifySignInInfo(pNode_t pNode)
 {
     char flag;
-    ssize_t ret;
+    int ret;
     Train_t train;
     char username[64] = {0};
     char salt[12] = {0}; // 盐值11位
@@ -119,7 +119,7 @@ ssize_t verifySignInInfo(pNode_t pNode)
         bzero(&train, sizeof(Train_t));
         strcpy(train._buf, salt);
         train._len = strlen(train._buf);
-        sendN(pNode->_sfdNew, (char*)&train, sizeof(size_t) + train._len);
+        sendN(pNode->_sfdNew, (char*)&train, sizeof(int) + train._len);
 
         bzero(pNode->_user, sizeof(pNode->_user));
         strcpy(pNode->_user, username);

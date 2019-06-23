@@ -8,7 +8,7 @@
 
 void parseCommandStart(char * cmd)
 {
-    for (size_t idx = 0, i = 0; idx != strlen(cmd); ++idx)
+    for (int idx = 0, i = 0; idx != strlen(cmd); ++idx)
     {
         if (cmd[idx] != ' ') {
             cmd[i] = cmd[idx];
@@ -21,24 +21,24 @@ void parseCommandStart(char * cmd)
     }
 }
 
-void getSalt(char * salt, size_t inum)
+void getSalt(char * salt, int inum)
 {
     strcpy(salt, "$6$");
     char str[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,./;<>?:";
     char tmpSalt[2] = {0};
     int lenStr = strlen(str);;
     srand((unsigned int)time((time_t*)NULL));
-    for (size_t idx = 0; idx != inum - 3; ++idx)
+    for (int idx = 0; idx != inum - 3; ++idx)
     {
         sprintf(tmpSalt, "%c", str[(rand()%lenStr)]);
         strcat(salt, tmpSalt);
     }
 }
 
-ssize_t signUp(int sfd)
+int signUp(int sfd)
 {
     char flag = -2;
-    ssize_t ret;
+    int ret;
 Label:
     printf("Enter username: ");
     fflush(stdout);
@@ -53,7 +53,7 @@ Label:
     bzero(&train, sizeof(Train_t));
     strcpy(train._buf, username);
     train._len = strlen(train._buf);
-    ret = sendN(sfd, (char*)&train, sizeof(size_t) + train._len);
+    ret = sendN(sfd, (char*)&train, sizeof(int) + train._len);
     if (-1 == ret) {
         return -1;
     }
@@ -88,7 +88,7 @@ LabelAgain:
     bzero(&train, sizeof(Train_t));
     strcpy(train._buf, passwd);
     train._len = strlen(train._buf);
-    ret = sendN(sfd, (char*)&train, sizeof(size_t) + train._len);
+    ret = sendN(sfd, (char*)&train, sizeof(int) + train._len);
     if (-1 == ret) {
         return -1;
     }
@@ -107,10 +107,10 @@ LabelAgain:
     return 0;
 }
 
-ssize_t verifySignInInfo(int sfd)
+int verifySignInInfo(int sfd)
 {
     char flag;
-    ssize_t ret;
+    int ret;
 LabelUsername:
     printf("login as:");
     fflush(stdout);
@@ -137,7 +137,7 @@ LabelUsername:
     }
 
     char salt[12] = {0};
-    recvN(sfd, (char*)&train._len, sizeof(size_t));
+    recvN(sfd, (char*)&train._len, sizeof(int));
     recvN(sfd, train._buf, train._len);
     strcpy(salt, train._buf);
 LabelPassword:

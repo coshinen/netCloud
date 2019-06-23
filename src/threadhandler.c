@@ -25,7 +25,7 @@ void * threadHandler(void * p)
     pQue_t pQue = &pFactory->_queFile;
     
     pNode_t pCur;
-    ssize_t ret = 0;
+    int ret = 0;
     while (1)
     {
         pthread_cleanup_push(cleanupCondMutex, &pQue->_mutex);

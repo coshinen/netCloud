@@ -34,7 +34,7 @@ Label:
     parseCommandStart(cmd);
     char flag = 0;
 
-    ssize_t ret;
+    int ret;
     if (!strcmp("signup", cmd)) {
         flag = 2;
         sendN(node._sfd, &flag, sizeof(char));

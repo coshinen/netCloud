@@ -13,44 +13,44 @@
 
 void * threadHandler(void*); // 线程行为函数
 
-ssize_t verifyMysqlUserName(const char*, char*, char*, char*, char*, char*);
-ssize_t insertMysqlUserInfo(const char*, const char*, const char*, const char*, const char*, const char*, const char*);
-ssize_t updateMysqlUserInfo(const char*, const char*, const char*);
-ssize_t verifyMysqlFileSystem(size_t*, char*, char*, size_t*, char*, size_t*);
-ssize_t insertMysqlFileSystem(const char*, size_t, const char*, const char*, const char*, const char*, size_t, const char*, size_t, const char*, size_t);
-ssize_t updateMysqlFileSystem(const char*, const char*, const char*, const size_t*, const char*);
-ssize_t deleteMysqlFileSystem(const char*);
+int verifyMysqlUserName(const char*, char*, char*, char*, char*, char*);
+int insertMysqlUserInfo(const char*, const char*, const char*, const char*, const char*, const char*, const char*);
+int updateMysqlUserInfo(const char*, const char*, const char*);
+int verifyMysqlFileSystem(int*, char*, char*, int*, char*, int*);
+int insertMysqlFileSystem(const char*, int, const char*, const char*, const char*, const char*, int, const char*, int, const char*, int);
+int updateMysqlFileSystem(const char*, const char*, const char*, const int*, const char*);
+int deleteMysqlFileSystem(const char*);
 
 void getSalt(char*, const char*); // 获取盐值
-ssize_t signUp(pNode_t);
-ssize_t verifySignInInfo(pNode_t);
+int signUp(pNode_t);
+int verifySignInInfo(pNode_t);
 
-ssize_t getCommand(pNode_t, pFactory_t);
+int getCommand(pNode_t, pFactory_t);
 char ** parseCommand(const char*);
-ssize_t selectCommand(char**, pNode_t, pFactory_t);
+int selectCommand(char**, pNode_t, pFactory_t);
 
-ssize_t sendN(int, const char*, size_t);
-ssize_t recvN(int, char*, size_t);
-ssize_t getMD5(int, off_t, char*);
+int sendN(int, const char*, int);
+int recvN(int, char*, int);
+int getMD5(int, off_t, char*);
 void getDate(char*);
-size_t float2str(char*, off_t);
+int float2str(char*, off_t);
 void convertSize(char*, double);
 
 void helpFile(pNode_t);
-ssize_t listFiles(pNode_t, char**);
+int listFiles(pNode_t, char**);
 void printWorkingDirectory(pNode_t);
-size_t queryInum(const char*);
-size_t getLenDir(char*);
+int queryInum(const char*);
+int getLenDir(char*);
 void changeDirectory(pNode_t, char*);
-ssize_t getsFileAgain(pNode_t, int, off_t);
-ssize_t getsMappingLargeFile(pNode_t, off_t, int, off_t);
-ssize_t getsFile(pNode_t, const char*); // sendData
-ssize_t putsMappingLargeFile(pNode_t, off_t, int);
-ssize_t putsFile(pNode_t, const char*);
+int getsFileAgain(pNode_t, int, off_t);
+int getsMappingLargeFile(pNode_t, off_t, int, off_t);
+int getsFile(pNode_t, const char*); // sendData
+int putsMappingLargeFile(pNode_t, off_t, int);
+int putsFile(pNode_t, const char*);
 void removeFile(pNode_t, const char*);
 void makeDirectory(pNode_t, const char*);
 void removeDirectory(pNode_t, const char*);
 void renameFile(pNode_t, const char*, const char*);
-ssize_t signOut(pNode_t);
+int signOut(pNode_t);
 
 #endif

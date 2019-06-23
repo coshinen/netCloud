@@ -6,14 +6,14 @@
 
 #include "threadhandler.h"
 
-ssize_t getCommand(pNode_t pNode, pFactory_t pFactory)
+int getCommand(pNode_t pNode, pFactory_t pFactory)
 {
     Train_t train;
     char ** cmd;
-    ssize_t ret;
+    int ret;
     bzero(&train, sizeof(Train_t));
 
-    ret = recvN(pNode->_sfdNew, (char*)&train._len, sizeof(size_t));
+    ret = recvN(pNode->_sfdNew, (char*)&train._len, sizeof(int));
     if (0 == ret) {
         return -1;
     } else if (0 == train._len) {
@@ -30,7 +30,7 @@ ssize_t getCommand(pNode_t pNode, pFactory_t pFactory)
 
     ret = selectCommand(cmd, pNode, pFactory);
     
-    for (size_t idx = 0; idx != 3; ++idx)
+    for (int idx = 0; idx != 3; ++idx)
     {
         free(cmd[idx]);
     }
@@ -46,13 +46,13 @@ ssize_t getCommand(pNode_t pNode, pFactory_t pFactory)
 char ** parseCommand(const char * buf)
 {
     char ** cmd = (char**)calloc(3, sizeof(char*));
-    size_t idx;
+    int idx;
     for (idx = 0; idx != 3; ++idx)
     {
         cmd[idx] = (char*)calloc(1, sizeof(char) * 64);
     }
     
-    size_t iBuf;
+    int iBuf;
     for (iBuf = 0; iBuf != strlen(buf); ++iBuf)
     {
         if (buf[iBuf] != ' ') {
@@ -61,7 +61,7 @@ char ** parseCommand(const char * buf)
     }
 
     idx = 0;
-    for (size_t jCmd = 0; iBuf != strlen(buf); ++iBuf)
+    for (int jCmd = 0; iBuf != strlen(buf); ++iBuf)
     {
         if (buf[iBuf] != ' ') {
             cmd[idx][jCmd] = buf[iBuf];
@@ -88,9 +88,9 @@ void getDate(char * date)
     sprintf(date, "%d-%02d-%02d %02d:%02d:%02d", 1900 + pgm->tm_year, 1 + pgm->tm_mon, pgm->tm_mday, 8 + pgm->tm_hour, pgm->tm_min, pgm->tm_sec);
 }
 
-ssize_t selectCommand(char ** cmd, pNode_t pNode, pFactory_t pFactory)
+int selectCommand(char ** cmd, pNode_t pNode, pFactory_t pFactory)
 {
-    ssize_t flag = 0;
+    int flag = 0;
     pNode_t pCur = (pNode_t)calloc(1, sizeof(Node_t));
     
     if (!strcmp("help", *cmd)) {
@@ -138,13 +138,13 @@ ssize_t selectCommand(char ** cmd, pNode_t pNode, pFactory_t pFactory)
     return flag;
 }
 
-ssize_t sendN(int sfd, const char * train, size_t len)
+int sendN(int sfd, const char * train, int len)
 {
-    ssize_t total = 0;
-    ssize_t ret;
-    while ((size_t)total < len)
+    int total = 0;
+    int ret;
+    while ((int)total < len)
     {
-        ret = send(sfd, train + total, len - (size_t)total, 0);
+        ret = send(sfd, train + total, len - (int)total, 0);
         if (-1 == ret) {
             return -1;
         }
@@ -154,13 +154,13 @@ ssize_t sendN(int sfd, const char * train, size_t len)
     return total;
 }
 
-ssize_t recvN(int sfd, char * train, size_t len)
+int recvN(int sfd, char * train, int len)
 {
-    ssize_t total = 0;
-    ssize_t ret;
-    while ((size_t)total < len)
+    int total = 0;
+    int ret;
+    while ((int)total < len)
     {
-        ret = recv(sfd, train + total, len - (size_t)total, 0);
+        ret = recv(sfd, train + total, len - (int)total, 0);
         if (-1 == ret) {
             perror("recv");
             return -1;
@@ -173,7 +173,7 @@ ssize_t recvN(int sfd, char * train, size_t len)
     return total;
 }
 
-ssize_t getMD5(int fd, off_t sizeFile, char * md5)
+int getMD5(int fd, off_t sizeFile, char * md5)
 {
     unsigned char * pMmap = (unsigned char*)mmap(NULL, sizeFile, PROT_READ, MAP_SHARED, fd, 0);
     if (MAP_FAILED == (void*)pMmap) {
@@ -184,7 +184,7 @@ ssize_t getMD5(int fd, off_t sizeFile, char * md5)
     unsigned char md[16];
     MD5(pMmap, sizeFile, md);
     char temp[3] = {0};
-    for (size_t idx = 0; idx != 16; ++idx)
+    for (int idx = 0; idx != 16; ++idx)
     {
         sprintf(temp, "%2.2x", md[idx]);
         strcat(md5, temp);
@@ -198,9 +198,9 @@ ssize_t getMD5(int fd, off_t sizeFile, char * md5)
     return 0;
 }
 
-size_t float2str(char * buf, off_t size)
+int float2str(char * buf, off_t size)
 {
-    size_t len = 0;
+    int len = 0;
     off_t tmpSize = size;
     while (tmpSize != 0)
     {
@@ -209,7 +209,7 @@ size_t float2str(char * buf, off_t size)
     }
     
     off_t tmp;
-    for (size_t idx = len - 1; size != 0; --idx)
+    for (int idx = len - 1; size != 0; --idx)
     {
         tmp = size % 10;
         size /= 10;
@@ -245,16 +245,16 @@ void helpFile(pNode_t pNode)
     sendN(pNode->_sfdNew, &flag, sizeof(char));
 }
 
-ssize_t listFiles(pNode_t pNode, char ** cmd)
+int listFiles(pNode_t pNode, char ** cmd)
 {
     char path[256] = {0};
     strncpy(path, pNode->_path, pNode->_idxLen - 1);
-    size_t curInode;
+    int curInode;
     verifyMysqlFileSystem(&curInode, NULL, path, NULL, NULL, NULL);
-    size_t preInode = curInode;
+    int preInode = curInode;
     char type[5] = {0};
     char fileName[64] = {0};
-    size_t sizeFile;
+    int sizeFile;
     char date[20] = {0};
     Train_t train;
     char sizeStr[9];
@@ -280,13 +280,13 @@ ssize_t listFiles(pNode_t pNode, char ** cmd)
         if (res) {
             while ((row = mysql_fetch_row(res)) != NULL)
             {
-                if ((size_t)atol(row[1]) == preInode) {
+                if ((int)atol(row[1]) == preInode) {
                     if (!strcmp("", cmd[1])) {
                         flag = 1;
 
                         strcpy(type, row[3]);
                         strcpy(fileName, row[4]);
-                        sizeFile = (size_t)atol(row[9]);
+                        sizeFile = (int)atol(row[9]);
                         strcpy(date, row[10]);
 
                         bzero(&train, sizeof(Train_t));
@@ -298,14 +298,14 @@ ssize_t listFiles(pNode_t pNode, char ** cmd)
                             sprintf(train._buf, "[File] %-16.16s [Size] %-8s [Modified date] %s", fileName, sizeStr, date);
                         }
                         train._len = strlen(train._buf);
-                        sendN(pNode->_sfdNew, (char*)&train, sizeof(size_t) + train._len);
+                        sendN(pNode->_sfdNew, (char*)&train, sizeof(int) + train._len);
                     } else if (!strcmp("-l", cmd[1])) {
                         if (!strcmp(row[4], cmd[2])) {
                             flag = 1;
 
                             strcpy(type, row[3]);
                             strcpy(fileName, row[4]);
-                            sizeFile = (size_t)atol(row[9]);
+                            sizeFile = (int)atol(row[9]);
                             strcpy(date, row[10]);
 
                             bzero(&train, sizeof(Train_t));
@@ -317,7 +317,7 @@ ssize_t listFiles(pNode_t pNode, char ** cmd)
                                 sprintf(train._buf, "[File] %s [Size] %-8s [Modified date] %s", fileName, sizeStr, date);
                             }
                             train._len = strlen(train._buf);
-                            sendN(pNode->_sfdNew, (char*)&train, sizeof(size_t) + train._len);
+                            sendN(pNode->_sfdNew, (char*)&train, sizeof(int) + train._len);
 
                             break;
                         } else {
@@ -329,7 +329,7 @@ ssize_t listFiles(pNode_t pNode, char ** cmd)
                 }
             }
             train._len = 0;
-            sendN(pNode->_sfdNew, (char*)&train, sizeof(size_t) + train._len);
+            sendN(pNode->_sfdNew, (char*)&train, sizeof(int) + train._len);
         }
         mysql_free_result(res);
     }
@@ -351,16 +351,16 @@ void printWorkingDirectory(pNode_t pNode)
     }
     
     train._len = strlen(train._buf);
-    sendN(pNode->_sfdNew, (char*)&train, sizeof(size_t) + train._len);
+    sendN(pNode->_sfdNew, (char*)&train, sizeof(int) + train._len);
 
     train._len = 0;
-    sendN(pNode->_sfdNew, (char*)&train, sizeof(size_t) + train._len);
+    sendN(pNode->_sfdNew, (char*)&train, sizeof(int) + train._len);
 }
 
-size_t queryInum(const char * directory)
+int queryInum(const char * directory)
 {
-    size_t inum = 0;
-    for (size_t idx = 0; idx != strlen(directory); ++idx)
+    int inum = 0;
+    for (int idx = 0; idx != strlen(directory); ++idx)
     {
         if ('/' == directory[idx]) {
             ++inum;
@@ -369,9 +369,9 @@ size_t queryInum(const char * directory)
     return inum;
 }
 
-size_t getLenDir(char * tempDirectory)
+int getLenDir(char * tempDirectory)
 {
-    size_t idx;
+    int idx;
     for (idx = strlen(tempDirectory) - 1; idx != 0; --idx)
     {
         if ('/' == tempDirectory[idx]) {
@@ -416,7 +416,7 @@ void changeDirectory(pNode_t pNode, char * directory)
                         sprintf(pathName, "%s%s%s%s", ROOTPATH, pNode->_user, "/", directory + 1);
                     }
                     char type[5] = {0};
-                    ssize_t ret = verifyMysqlFileSystem(NULL, type, pathName, NULL, NULL, NULL);
+                    int ret = verifyMysqlFileSystem(NULL, type, pathName, NULL, NULL, NULL);
                     if (-1 == ret) {
                         flag = -1;
                     } else if (0 == ret) {
@@ -430,7 +430,7 @@ void changeDirectory(pNode_t pNode, char * directory)
                     char pathName[256] = {0};
                     sprintf(pathName, "%s%s", pNode->_path, directory);
                     char type[5] = {0};
-                    ssize_t ret = verifyMysqlFileSystem(NULL, type, pathName, NULL, NULL, NULL);
+                    int ret = verifyMysqlFileSystem(NULL, type, pathName, NULL, NULL, NULL);
                     if (-1 == ret) {
                         flag = -1;
                     } else if (0 == ret) {
@@ -472,7 +472,7 @@ void changeDirectory(pNode_t pNode, char * directory)
             
             char tempDirectory[256] = {0};
             sprintf(tempDirectory, "%s", directory);
-            for (size_t idx = pNode->_inum + queryInum(directory) + 1; idx != pNode->_inum; --idx)
+            for (int idx = pNode->_inum + queryInum(directory) + 1; idx != pNode->_inum; --idx)
             {
                 pNode->_lenDir[idx] = strlen(tempDirectory) - getLenDir(tempDirectory);
             }
@@ -484,7 +484,7 @@ void changeDirectory(pNode_t pNode, char * directory)
 
         char tempDirectory[256] = {0};
         sprintf(tempDirectory, "%s%s", "/", directory);
-        for (size_t idx = pNode->_inum + queryInum(directory) + 1; idx != pNode->_inum; --idx)
+        for (int idx = pNode->_inum + queryInum(directory) + 1; idx != pNode->_inum; --idx)
         {
             pNode->_lenDir[idx] = strlen(tempDirectory) - getLenDir(tempDirectory);
         }
@@ -493,13 +493,13 @@ void changeDirectory(pNode_t pNode, char * directory)
     printWorkingDirectory(pNode);
 }
 
-ssize_t getsFileAgain(pNode_t pNode, int fd, off_t fileSize)
+int getsFileAgain(pNode_t pNode, int fd, off_t fileSize)
 {
     off_t fileSizeCur;
     recvN(pNode->_sfdNew, (char*)&fileSizeCur, sizeof(off_t));
 printf("fileSizeCur = %ld\n", fileSizeCur);
     
-    ssize_t ret;
+    int ret;
     if (fileSize > 100 * 1024 * 1024) { // mmap
         ret = getsMappingLargeFile(pNode, fileSize, fd, fileSizeCur);
         if (-1 == ret) {
@@ -509,10 +509,10 @@ printf("fileSizeCur = %ld\n", fileSizeCur);
         }
     } else {
         off_t totalCur = fileSizeCur;
-        ssize_t retLen = 0;
+        int retLen = 0;
         while (totalCur < fileSize)
         {
-            retLen = sendfile(pNode->_sfdNew, fd, &totalCur, fileSize - (size_t)totalCur);
+            retLen = sendfile(pNode->_sfdNew, fd, &totalCur, fileSize - (int)totalCur);
             if (-1 == retLen) {
                 close(fd);
                 perror("sendfile");
@@ -524,7 +524,7 @@ printf("fileSizeCur = %ld\n", fileSizeCur);
     return 0;
 }
 
-ssize_t getsMappingLargeFile(pNode_t pNode, off_t sizeFile, int fd, off_t sizeFileCur)
+int getsMappingLargeFile(pNode_t pNode, off_t sizeFile, int fd, off_t sizeFileCur)
 {
     char * pMmap = (char*)mmap(NULL, sizeFile, PROT_READ, MAP_SHARED, fd, 0);
     if (MAP_FAILED == (void*)pMmap) {
@@ -533,7 +533,7 @@ ssize_t getsMappingLargeFile(pNode_t pNode, off_t sizeFile, int fd, off_t sizeFi
     }
 
     off_t totalCur = sizeFileCur;
-    ssize_t retLen = 0;
+    int retLen = 0;
     while (totalCur < sizeFile)
     {
         retLen = send(pNode->_sfdNew, pMmap + totalCur, sizeFile - totalCur, 0);
@@ -555,15 +555,15 @@ ssize_t getsMappingLargeFile(pNode_t pNode, off_t sizeFile, int fd, off_t sizeFi
     return 0;
 }
 
-ssize_t getsFile(pNode_t pNode, const char * fileName)
+int getsFile(pNode_t pNode, const char * fileName)
 {
     char type[5] = {0};
     char pathName[256] = {0};
     sprintf(pathName, "%s%s", pNode->_path, fileName);
     char md5[33] = {0};
-    size_t fileSize;
+    int fileSize;
     char flag = 0;
-    ssize_t ret = verifyMysqlFileSystem(NULL, type, pathName, NULL, md5, &fileSize);
+    int ret = verifyMysqlFileSystem(NULL, type, pathName, NULL, md5, &fileSize);
     if (-1 == ret) {
         flag = -1;
         sendN(pNode->_sfdNew, &flag, sizeof(char));
@@ -583,7 +583,7 @@ ssize_t getsFile(pNode_t pNode, const char * fileName)
             if (-1 == fd) {
                 return 0;
             }
-            ret = sendN(pNode->_sfdNew, (char*)&fileSize, sizeof(size_t));
+            ret = sendN(pNode->_sfdNew, (char*)&fileSize, sizeof(int));
             if (-1 == ret) {
                 close(fd);
                 return 0;
@@ -613,11 +613,11 @@ ssize_t getsFile(pNode_t pNode, const char * fileName)
                 }
             } else { // download
                 off_t totalCur = 0;
-                ssize_t retLen = 0;
-                while ((size_t)totalCur < fileSize)
+                int retLen = 0;
+                while ((int)totalCur < fileSize)
                 {
-                    retLen = sendfile(pNode->_sfdNew, fd, &totalCur, fileSize - (size_t)totalCur);
-                    //retLen = sendfile(pNode->_sfdNew, fd, NULL, fileSize - (size_t)totalCur);
+                    retLen = sendfile(pNode->_sfdNew, fd, &totalCur, fileSize - (int)totalCur);
+                    //retLen = sendfile(pNode->_sfdNew, fd, NULL, fileSize - (int)totalCur);
                     //totalCur += retLen;
                     if (-1 == retLen) {
                         close(fd);
@@ -632,7 +632,7 @@ ssize_t getsFile(pNode_t pNode, const char * fileName)
     return 0;
 }
 
-ssize_t putsMappingLargeFile(pNode_t pNode, off_t sizeFile, int fd)
+int putsMappingLargeFile(pNode_t pNode, off_t sizeFile, int fd)
 {
     int ret = ftruncate(fd, sizeFile);
     if (-1 == ret) {
@@ -646,8 +646,8 @@ ssize_t putsMappingLargeFile(pNode_t pNode, off_t sizeFile, int fd)
         return -1;
     }
 
-    ssize_t totalCur = 0;
-    ssize_t retLen = 0;
+    int totalCur = 0;
+    int retLen = 0;
     while (totalCur < sizeFile)
     {
         retLen = recv(pNode->_sfdNew, pMmap + totalCur, sizeFile - totalCur, 0);
@@ -669,7 +669,7 @@ ssize_t putsMappingLargeFile(pNode_t pNode, off_t sizeFile, int fd)
     return 0;
 }
 
-ssize_t putsFile(pNode_t pNode, const char * fileName)
+int putsFile(pNode_t pNode, const char * fileName)
 {
     char flag = 0;
     sendN(pNode->_sfdNew, &flag, sizeof(char));
@@ -684,15 +684,15 @@ ssize_t putsFile(pNode_t pNode, const char * fileName)
     sprintf(pathName, "%s%s", pNode->_path, fileName);
     
     char md5[33] = {0};
-    ssize_t ret = recvN(pNode->_sfdNew, md5, sizeof(md5));
+    int ret = recvN(pNode->_sfdNew, md5, sizeof(md5));
     if (0 == ret) {
         return -1;
     }
     
-    size_t fileSize;
+    int fileSize;
     ret = verifyMysqlFileSystem(NULL, NULL, pathName, NULL, NULL, NULL);
     if (-1 == ret) {
-        size_t linkNumsFile;
+        int linkNumsFile;
         ret = verifyMysqlFileSystem(NULL, NULL, NULL, &linkNumsFile, md5, &fileSize);
         if (-1 == ret) { // not found
             flag = 1;
@@ -701,10 +701,10 @@ ssize_t putsFile(pNode_t pNode, const char * fileName)
         } else if (0 == ret) {
             char path[256] = {0};
             strncpy(path, pNode->_path, pNode->_idxLen - 1);
-            size_t curInode;
-            size_t linkNumsDir;
+            int curInode;
+            int linkNumsDir;
             verifyMysqlFileSystem(&curInode, NULL, path, &linkNumsDir, NULL, NULL);
-            size_t preInode = curInode;
+            int preInode = curInode;
             char date[20] = {0};
             getDate(date);
             
@@ -753,7 +753,7 @@ ssize_t putsFile(pNode_t pNode, const char * fileName)
         }
     } else {
         off_t totalCur = 0; // upload
-        ssize_t retLen = 0;
+        int retLen = 0;
         char buf[1020];
         while (totalCur < sizeFile)
         {
@@ -774,10 +774,10 @@ ssize_t putsFile(pNode_t pNode, const char * fileName)
     if (!strcmp(md5Cur, md5)) {
         char path[256] = {0};
         strncpy(path, pNode->_path, pNode->_idxLen - 1);
-        size_t curInode;
-        size_t linkNumsDir;
+        int curInode;
+        int linkNumsDir;
         verifyMysqlFileSystem(&curInode, NULL, path, &linkNumsDir, NULL, NULL);
-        size_t preInode = curInode;
+        int preInode = curInode;
         char date[20] = {0};
         getDate(date);
         
@@ -808,11 +808,11 @@ void removeFile(pNode_t pNode, const char * fileName)
     char pathName[256];
     bzero(pathName, sizeof(pathName));
     sprintf(pathName, "%s%s", pNode->_path, fileName);
-    size_t linkNumsFile;
+    int linkNumsFile;
     char md5[33] = {0};
 
     char flag = -1;
-    ssize_t ret = verifyMysqlFileSystem(NULL, type, pathName, &linkNumsFile, md5, NULL);
+    int ret = verifyMysqlFileSystem(NULL, type, pathName, &linkNumsFile, md5, NULL);
     if (-1 == ret) {
         flag = -1;
     } else if (0 == ret) {
@@ -823,7 +823,7 @@ void removeFile(pNode_t pNode, const char * fileName)
             
             char path[256] = {0};
             strncpy(path, pNode->_path, pNode->_idxLen - 1);
-            size_t linkNumsDir;
+            int linkNumsDir;
             verifyMysqlFileSystem(NULL, NULL, path, &linkNumsDir, NULL, NULL);
             --linkNumsDir;
             updateMysqlFileSystem(NULL, NULL, path, &linkNumsDir, NULL);
@@ -850,15 +850,15 @@ void makeDirectory(pNode_t pNode, const char * fileName)
     } else {
         char path[256] = {0};
         strncpy(path, pNode->_path, pNode->_idxLen - 1);
-        size_t curInode;
-        size_t linkNumsDir;
+        int curInode;
+        int linkNumsDir;
         verifyMysqlFileSystem(&curInode, NULL, path, &linkNumsDir, NULL, NULL);
-        size_t preInode = curInode;
+        int preInode = curInode;
         
         char pathName[256] = {0};
         sprintf(pathName, "%s%s", pNode->_path, fileName);
         
-        ssize_t ret = verifyMysqlFileSystem(NULL, NULL, pathName, NULL, NULL, NULL);
+        int ret = verifyMysqlFileSystem(NULL, NULL, pathName, NULL, NULL, NULL);
         if (-1 == ret) {
             char date[20] = {0};
             getDate(date);
@@ -891,8 +891,8 @@ void removeDirectory(pNode_t pNode, const char * fileName)
         sprintf(pathName, "%s%s", pNode->_path, fileName);
         
         char fileType[5] = {0};
-        size_t linkNumsDir;
-        ssize_t ret = verifyMysqlFileSystem(NULL, fileType, pathName, &linkNumsDir, NULL, NULL);
+        int linkNumsDir;
+        int ret = verifyMysqlFileSystem(NULL, fileType, pathName, &linkNumsDir, NULL, NULL);
         if (-1 == ret) {
             flag = 1;
             printf("The directory doesn't exist!\n");
@@ -933,7 +933,7 @@ void renameFile(pNode_t pNode, const char * oldFileName, const char * newFileNam
     sprintf(newPathName, "%s%s", pNode->_path, newFileName);
     
     char flag = -1;
-    ssize_t ret = verifyMysqlFileSystem(NULL, NULL, oldPathName, NULL, NULL, NULL);
+    int ret = verifyMysqlFileSystem(NULL, NULL, oldPathName, NULL, NULL, NULL);
     if (-1 == ret) {
         flag = 1;
         printf("The file or directory doesn't exist!\n");
@@ -950,9 +950,9 @@ void renameFile(pNode_t pNode, const char * oldFileName, const char * newFileNam
     sendN(pNode->_sfdNew, &flag, sizeof(char));
 }
 
-ssize_t signOut(pNode_t pNode)
+int signOut(pNode_t pNode)
 {
-    ssize_t flag = -1;
-    sendN(pNode->_sfdNew, (char*)&flag, sizeof(ssize_t));
+    int flag = -1;
+    sendN(pNode->_sfdNew, (char*)&flag, sizeof(int));
     return flag;
 }

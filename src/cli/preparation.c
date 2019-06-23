@@ -29,7 +29,7 @@ Label:
     return sfd;
 }
 
-ssize_t getLocalIP(int sfd, char * ip)
+int getLocalIP(int sfd, char * ip)
 {
     struct ifreq ifr;
     bzero(&ifr, sizeof(struct ifreq));
@@ -53,7 +53,7 @@ char ** readDownloadingConf(const char * args)
     int fd = open(args, O_RDONLY);
     
     char ** argsConf = (char**)calloc(3,sizeof(char*));
-    size_t idx;
+    int idx;
     for (idx = 0; idx != 3; ++idx)
     {
         argsConf[idx] = (char*)calloc(1,sizeof(char) * 16);
@@ -62,7 +62,7 @@ char ** readDownloadingConf(const char * args)
     char buf[1024] = {0};
     read(fd, buf, sizeof(char) * 1024);
     
-    for (size_t iConf = 0, jConf = 0, iBuf = 2; iBuf != strlen(buf); ++iBuf)
+    for (int iConf = 0, jConf = 0, iBuf = 2; iBuf != strlen(buf); ++iBuf)
     {
         if (buf[iBuf - 2] == ' ' && buf[iBuf - 1] == '"') {
             for (; iBuf != strlen(buf); ++iBuf)

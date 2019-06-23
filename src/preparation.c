@@ -11,7 +11,7 @@ char ** ParseParameters(char * argv[])
     int fd = open(argv[1], O_RDONLY);
     
     char ** argvConf = (char**)calloc(3, sizeof(char*));
-    size_t idx;
+    int idx;
     for (idx = 0; idx != 3; ++idx)
     {
         argvConf[idx] = (char*)calloc(1, sizeof(char) * 16);
@@ -20,7 +20,7 @@ char ** ParseParameters(char * argv[])
     char buf[1024] = {0};
     read(fd, buf, sizeof(char) * 1024);
     
-    for (size_t iConf = 0, jConf = 0, iBuf = 2; iBuf != strlen(buf); ++iBuf)
+    for (int iConf = 0, jConf = 0, iBuf = 2; iBuf != strlen(buf); ++iBuf)
     {
         if (buf[iBuf - 2] == ' ' && buf[iBuf - 1] == '"') {
             for (; iBuf != strlen(buf); ++iBuf)
