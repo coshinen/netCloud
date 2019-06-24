@@ -7,7 +7,7 @@ OBJS:= $(patsubst %.c, %.o, $(SRCS))
 
 CXX:= gcc
 
-CXXFLAGS:= $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto
+CXXFLAGS:= -std=c99 $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto
 
 EXE:= ftp-cli
 
