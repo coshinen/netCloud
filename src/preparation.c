@@ -6,7 +6,29 @@
 
 #include "head.h"
 
-char ** ReadConfigFile(char * argv[])
+void LicenseInfo()
+{
+    char versionInfo[] = {"netCloud Core Daemon version v0.0.1.0\n"};
+    fprintf(stdout, "%s", versionInfo);
+}
+
+void HelpMessage()
+{
+    char strUsage[] = {"Usage:\n\n"
+                       "  ftpd [options]       Start netCloud Core Daemon\n\n"
+                       "Options:\n\n"
+                       "  -? / -h / -help\n"
+                       "       This help message\n\n"
+                       "  -version\n"
+                       "       Print version and exit\n\n"
+                       "  -port\n"
+                       "       Set socket port\n\n"
+                       "  -threads\n"
+                       "       Set thread number\n"};
+    fprintf(stdout, "%s", strUsage);
+}
+
+char** ReadConfigFile(char* argv[])
 {
     int fd = open(argv[1], O_RDONLY);
 

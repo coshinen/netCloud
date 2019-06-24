@@ -11,13 +11,6 @@ int AppInit(int argc, char* argv[])
     openlog(0, LOG_CONS | LOG_PID, LOG_LOCAL0);
 
     char ** argvConf = ReadConfigFile(argv);
-#if 0
-    /* for debug */
-    for (int idx = 0; idx != 3; ++idx)
-    {
-        printf("%s\n", argvConf[idx]);
-    }
-#endif
 
     getDaemon();
 
@@ -217,8 +210,18 @@ LabelExit:
 
 int main(int argc, char* argv[])
 {
-    if (argc != 2) {
-        printf("Please enter: ./ftpd ../ftp.conf\n");
+    // Parameters: process help and version
+    if (!strcmp(argv[1], "-?") || !strcmp(argv[1], "-h") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "-version"))
+    {
+        if (!strcmp(argv[1], "-version"))
+        {
+           LicenseInfo(); 
+        }
+        else
+        {
+            HelpMessage();
+        }
+
         return -1;
     }
 
