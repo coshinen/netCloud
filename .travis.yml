@@ -1,0 +1,10 @@
+sudo: required
+
+os: linux
+language: c
+compiler: gcc
+intall:
+    - sudo apt install mysql-server mysql-client
+    - sudo apt install libmysqlclient-dev
+script:
+    - make
