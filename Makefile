@@ -4,14 +4,14 @@ INS_DIR:= /usr/local/bin
 SRCS:= $(wildcard $(SRC_DIR)/*.c)
 OBJS:= $(patsubst %.c, %.o, $(SRCS))
 
-CXX:= gcc
+CC:= gcc
 
-CXXFLAGS:= -std=c99 $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto -lmysqlclient
+CFLAGS:= -std=c99 $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto -lmysqlclient
 
 EXE:= ftpd
 
 $(EXE):$(OBJS)
-	$(CXX) -o $(SRC_DIR)/$(EXE) $(OBJS) $(CXXFLAGS)
+	$(CC) -o $(SRC_DIR)/$(EXE) $(OBJS) $(CFLAGS)
 	cd src/cli; make
 
 install:

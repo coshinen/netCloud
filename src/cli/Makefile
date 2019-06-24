@@ -5,14 +5,14 @@ INST_DIR:= /usr/local/bin
 SRCS:= $(wildcard $(SRC_DIR)/*.c)
 OBJS:= $(patsubst %.c, %.o, $(SRCS))
 
-CXX:= gcc
+CC:= gcc
 
-CXXFLAGS:= -std=c99 $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto
+CFLAGS:= $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto
 
 EXE:= ftp-cli
 
 $(EXE):$(OBJS)
-	$(CXX) -o $(SRC_DIR)/$(DIST_DIR)/$(EXE) $(OBJS) $(CXXFLAGS)
+	$(CC) -o $(SRC_DIR)/$(DIST_DIR)/$(EXE) $(OBJS) $(CFLAGS)
 
 install:
 	install -m 0755 $(SRC_DIR)/$(DIST_DIR)/$(EXE) $(INST_DIR)
