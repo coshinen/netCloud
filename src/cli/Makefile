@@ -7,19 +7,19 @@ OBJS:= $(patsubst %.c, %.o, $(SRCS))
 
 CC:= gcc
 
-CFLAGS:= $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto
+CFLAGS:= -std=c99 $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto
 
-EXE:= ftp-cli
+ELF:= ftp-cli
 
-$(EXE):$(OBJS)
-	$(CC) -o $(SRC_DIR)/$(DIST_DIR)/$(EXE) $(OBJS) $(CFLAGS)
+$(ELF):$(OBJS)
+	$(CC) -o $(SRC_DIR)/$(DIST_DIR)/$(ELF) $(OBJS) $(CFLAGS)
 
 install:
-	install -m 0755 $(SRC_DIR)/$(DIST_DIR)/$(EXE) $(INST_DIR)
+	install -m 0755 $(SRC_DIR)/$(DIST_DIR)/$(ELF) $(INST_DIR)
 
 uninstall:
-	rm -rf $(INST_DIR)/$(EXE)
+	rm -rf $(INST_DIR)/$(ELF)
 
 clean:
-	rm -rf $(SRC_DIR)/$(DIST_DIR)/$(EXE)
+	rm -rf $(SRC_DIR)/$(DIST_DIR)/$(ELF)
 	rm -rf $(OBJS)

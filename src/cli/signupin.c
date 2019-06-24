@@ -143,8 +143,8 @@ LabelUsername:
 LabelPassword:
     bzero(&train, sizeof(Train_t));
     char passwordInfo[64] = {0};
-    char signinIp[16] = {0};
-    getLocalIP(sfd, signinIp);
+    char signinIp[16] = {"127.0.0.1"};
+    //getLocalIP(sfd, signinIp);
     sprintf(passwordInfo, "%s%s%s%s%s", username, "@", signinIp, "'s", " password:");
     char * password = getpass(passwordInfo);
 

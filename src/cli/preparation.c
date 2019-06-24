@@ -28,7 +28,7 @@ Label:
 
     return sfd;
 }
-
+#if 0
 int getLocalIP(int sfd, char * ip)
 {
     struct ifreq ifr;
@@ -47,7 +47,7 @@ int getLocalIP(int sfd, char * ip)
 
     return 0;
 }
-
+#endif
 char ** readDownloadingConf(const char * args)
 {
     int fd = open(args, O_RDONLY);

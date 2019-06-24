@@ -8,21 +8,21 @@ CC:= gcc
 
 CFLAGS:= -std=c99 $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto -lmysqlclient
 
-EXE:= ftpd
+ELF:= ftpd
 
-$(EXE):$(OBJS)
-	$(CC) -o $(SRC_DIR)/$(EXE) $(OBJS) $(CFLAGS)
+$(ELF):$(OBJS)
+	$(CC) -o $(SRC_DIR)/$(ELF) $(OBJS) $(CFLAGS)
 	cd src/cli; make
 
 install:
-	install -m 0755 $(SRC_DIR)/$(EXE) $(INS_DIR)
+	install -m 0755 $(SRC_DIR)/$(ELF) $(INS_DIR)
 	cd src/cli; make install
 
 uninstall:
-	rm -rf $(INS_DIR)/$(EXE)
+	rm -rf $(INS_DIR)/$(ELF)
 	cd src/cli; make uninstall
 
 clean:
-	rm -rf $(SRC_DIR)/$(EXE)
+	rm -rf $(SRC_DIR)/$(ELF)
 	rm -rf $(OBJS)
 	cd src/cli; make clean

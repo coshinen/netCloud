@@ -48,7 +48,7 @@ typedef struct { // 火车模型
 } Train_t, * pTrain_t;
 
 int scSocket(char**); // 套接字封装
-int getLocalIP(int, char*); // 获取本地IP
+//int getLocalIP(int, char*); // 获取本地IP
 char ** readDownloadingConf(const char*); // 读下载配置文件
 
 void * threadHandler(void*);
