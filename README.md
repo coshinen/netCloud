@@ -1,5 +1,7 @@
 # netCloud
 
+[![Build Status](https://travis-ci.org/mistydew/netCloud.svg?branch=master)](https://travis-ci.org/mistydew/netCloud)
+
 A customised protocol cloud storage.
 
 ## Todo
