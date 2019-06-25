@@ -47,6 +47,6 @@ $ sudo apt install libmysqlclient-dev
 ## Usage
 
 ```
-$ ./ftpd
-$ ./ftp-cli
+$ ./netcloud
+$ ./netcloud-cli
 ```

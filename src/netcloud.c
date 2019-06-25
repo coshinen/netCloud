@@ -1,5 +1,5 @@
  ///
- /// @file    ftpd.c
+ /// @file    netcloud.c
  /// @author  mistydew(mistydew@qq.com)
  /// @date    2017-09-13 11:11:08
  ///
@@ -8,6 +8,21 @@
 
 int AppInit(int argc, char* argv[])
 {
+    // Parameters: process help and version before taking care about datadir
+    if (!strcmp(argv[1], "-?") || !strcmp(argv[1], "-h") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "-version"))
+    {
+        if (!strcmp(argv[1], "-version"))
+        {
+            LicenseInfo();
+        }
+        else
+        {
+            HelpMessage();
+        }
+
+        return -1;
+    }
+
     openlog(0, LOG_CONS | LOG_PID, LOG_LOCAL0);
 
     char ** argvConf = ReadConfigFile(argv);
@@ -210,20 +225,5 @@ LabelExit:
 
 int main(int argc, char* argv[])
 {
-    // Parameters: process help and version
-    if (!strcmp(argv[1], "-?") || !strcmp(argv[1], "-h") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "-version"))
-    {
-        if (!strcmp(argv[1], "-version"))
-        {
-           LicenseInfo(); 
-        }
-        else
-        {
-            HelpMessage();
-        }
-
-        return -1;
-    }
-
     return (AppInit(argc, argv) ? -1 : 0);
 }

@@ -10,7 +10,7 @@ CC:= gcc
 
 CFLAGS:= -std=c99 -w -g -Wno-deprecated $(addprefix -I, $(INC_DIR)) $(LIBS)
 
-ELF:= ftp-cli
+ELF:= netcloud-cli
 
 $(ELF):$(OBJS)
 	$(CC) -o $(SRC_DIR)/$(DIST_DIR)/$(ELF) $(OBJS) $(CFLAGS)
