@@ -32,15 +32,14 @@ char** ReadConfigFile(char* argv[])
 {
     int fd = open(argv[1], O_RDONLY);
 
+    char buf[1024] = {0};
+    read(fd, buf, sizeof(char) * 1024);
+
     char ** argvConf = (char**)calloc(3, sizeof(char*));
-    int idx;
-    for (idx = 0; idx != 3; ++idx)
+    for (int idx = 0; idx != 3; ++idx)
     {
         argvConf[idx] = (char*)calloc(1, sizeof(char) * 16);
     }
-
-    char buf[1024] = {0};
-    read(fd, buf, sizeof(char) * 1024);
 
     for (int idx = 0, y =0; idx != strlen(buf); ++idx)
     {
@@ -54,31 +53,9 @@ char** ReadConfigFile(char* argv[])
             ++y;
         }
     }
-    for (int idx = 0; idx != 3; ++idx)
-        printf("%s\n", argvConf[idx]);
 
     close(fd);
     return argvConf;
-}
-
-void getDaemon()
-{
-    if (fork()) { // 创建子进程，父进程退出
-        exit(0);
-    }
-    
-    setsid(); // 设置新会话
-
-    umask(0); // 设置掩码
-    
-    mkdir(ROOTPATH, 0775); // 创建工作目录
-
-    chdir(ROOTPATH); // 切换工作目录到/tmp/ftps
-    
-//    for (int idx = 0; idx != 3; ++idx) // 关闭标准输入、输出、错误文件描述符
-//    {
-//        close(idx);
-//    }
 }
 
 void sigHandler(int signum)

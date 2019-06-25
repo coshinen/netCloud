@@ -36,14 +36,14 @@
 #include <openssl/md5.h>
 #include <sys/sendfile.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 int exitfd[2]; // 异步拉起同步
-static char * ROOTPATH = "/tmp/ftps/";
+static char * ROOTPATH = "/tmp/netCloud/";
 
 void LicenseInfo();
 void HelpMessage();
 char** ReadConfigFile(char**);
-void getDaemon();
 void setExit(); // 退出机制
 int sblSocket(char**); // 初始化套接字，socket、bind、listen
 

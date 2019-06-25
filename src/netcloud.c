@@ -27,10 +27,34 @@ int AppInit(int argc, char* argv[])
 
     char ** argvConf = ReadConfigFile(argv);
 
-    getDaemon();
+    // Daemonize
+    fprintf(stdout, "netCloud server starting\n");
+    pid_t pid = fork();
+    if (pid < 0)
+    {
+        fprintf(stderr, "Error: fork() returned %d errno %d\n", pid, errno);
+        return -1;
+    }
+    if (pid > 0) // Parent process, pid is child process id
+    {
+        return 0;
+    }
+    // Child process falls through to rest of initialization
 
-    setExit();
+    pid_t sid = setsid();
+    if (sid < 0)
+        fprintf(stderr, "Error: setsid() returned %d errno %d\n", sid, errno);
 
+    umask(0);
+
+    mkdir(ROOTPATH, 0775);
+    chdir(ROOTPATH);
+#if 0
+    for (int idx = 0; idx != 3; ++idx)
+    {
+        close(idx);
+    }
+#endif
     int sfd = sblSocket(argvConf);
 
     createMysqlUserInfo();
