@@ -4,10 +4,11 @@ DIST_DIR:= ..
 INST_DIR:= /usr/local/bin
 SRCS:= $(wildcard $(SRC_DIR)/*.c)
 OBJS:= $(patsubst %.c, %.o, $(SRCS))
+LIBS:= -lpthread -lcrypt -lcrypto
 
 CC:= gcc
 
-CFLAGS:= -std=c99 $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto
+CFLAGS:= -std=c99 -w -g -Wno-deprecated $(addprefix -I, $(INC_DIR)) $(LIBS)
 
 ELF:= ftp-cli
 

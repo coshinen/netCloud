@@ -3,10 +3,11 @@ SRC_DIR:= src
 INS_DIR:= /usr/local/bin
 SRCS:= $(wildcard $(SRC_DIR)/*.c)
 OBJS:= $(patsubst %.c, %.o, $(SRCS))
+LIBS:= -lpthread -lcrypt -lcrypto -lmysqlclient
 
 CC:= gcc
 
-CFLAGS:= -std=c99 $(addprefix -I, $(INC_DIR)) -pthread -lcrypt -lcrypto -lmysqlclient
+CFLAGS:= -std=c99 -w -g -Wno-deprecated $(addprefix -I, $(INC_DIR)) $(LIBS)
 
 ELF:= ftpd
 
