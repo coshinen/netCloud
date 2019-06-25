@@ -42,16 +42,20 @@ char** ReadConfigFile(char* argv[])
     char buf[1024] = {0};
     read(fd, buf, sizeof(char) * 1024);
 
-    for (int idx = 0; idx != strlen(buf); ++idx)
+    for (int idx = 0, y =0; idx != strlen(buf); ++idx)
     {
-        if (buf[idx] = '=') {
+        if (buf[idx] == '=')
+        {
             ++idx;
-            for (int x = 0, y =0; buf[idx] !='\n'; ++idx, ++x)
+            for (int x = 0; buf[idx] != '\n'; ++idx, ++x)
             {
                 argvConf[y][x] = buf[idx];
             }
+            ++y;
         }
     }
+    for (int idx = 0; idx != 3; ++idx)
+        printf("%s\n", argvConf[idx]);
 
     close(fd);
     return argvConf;

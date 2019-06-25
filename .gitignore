@@ -29,8 +29,8 @@
 *.dylib
 
 # Executables
-ftpd
-ftp-cli
+netcloud
+netcloud-cli
 *.exe
 *.out
 *.app
