@@ -23,7 +23,12 @@ int AppInit(int argc, char* argv[])
 
     openlog(0, LOG_CONS | LOG_PID, LOG_LOCAL0);
 
-    char ** argvConf = ReadConfigFile(argv);
+    char pathConfigFile[1024] = {0};
+    GetDataDir(pathConfigFile);
+    GetConfigFile(pathConfigFile);
+    printf("%s\n", pathConfigFile);
+
+    char ** argvConf = ReadConfigFile(pathConfigFile);
 
     // Daemonize
     fprintf(stdout, "netCloud server starting\n");

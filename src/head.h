@@ -36,9 +36,12 @@ static char * ROOTPATH = "/tmp/netCloud/";
 
 void LicenseInfo();
 void HelpMessage();
-char** ReadConfigFile(char**);
+void GetDefaultDataDir(char* path);
+void GetDataDir(char* path);
+void GetConfigFile(char* path);
+char** ReadConfigFile(char*);
 void setExit(); // 退出机制
-int sblSocket(char**); // 初始化套接字，socket、bind、listen
+int sblSocket(char**); // init socket, bind, listen
 
 void createMysqlUserInfo();
 void createMysqlFileSystem();

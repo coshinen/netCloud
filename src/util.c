@@ -26,12 +26,35 @@ void HelpMessage()
     fprintf(stdout, "%s", strUsage);
 }
 
-char** ReadConfigFile(char* argv[])
+void GetDefaultDataDir(char* path)
 {
-    int fd = open(argv[1], O_RDONLY);
+    // Unix: ~/.netCloud
+    char* pszHome = getenv("HOME");
+    if (pszHome == NULL || strlen(pszHome) == 0)
+        strcpy(path, "/");
+    else
+        sprintf(path, "%s%s", pszHome, "/");
+
+    sprintf(path, "%s%s", path, ".netCloud");
+}
+
+void GetDataDir(char* path)
+{
+    GetDefaultDataDir(path);
+    mkdir(path, 0775);
+}
+
+void GetConfigFile(char* path)
+{
+    sprintf(path, "%s%s%s", path, "/", "netCloud.conf");
+}
+
+char** ReadConfigFile(char* pathConfigFile)
+{
+    int fdConfig = open(pathConfigFile, O_RDONLY);
 
     char buf[1024] = {0};
-    read(fd, buf, sizeof(char) * 1024);
+    read(fdConfig, buf, sizeof(char) * 1024);
 
     char ** argvConf = (char**)calloc(3, sizeof(char*));
     for (int idx = 0; idx != 3; ++idx)
@@ -52,7 +75,7 @@ char** ReadConfigFile(char* argv[])
         }
     }
 
-    close(fd);
+    close(fdConfig);
     return argvConf;
 }
 
