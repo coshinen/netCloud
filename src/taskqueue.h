@@ -1,8 +1,6 @@
- ///
- /// @file    workQue.h
- /// @author  mistydew(mistydew@qq.com)
- /// @date    2017-09-13 23:32:49
- ///
+// Copyright (c) 2017-2019 mistydew
+// Distributed under the MIT software license, see the accompanying
+// file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef __TASKQUE_H__
 #define __TASKQUE_H__

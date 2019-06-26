@@ -1,8 +1,6 @@
- ///
- /// @file    head.h
- /// @author  mistydew(mistydew@qq.com)
- /// @date    2017-09-14 22:34:55
- ///
+// Copyright (c) 2017-2019 mistydew
+// Distributed under the MIT software license, see the accompanying
+// file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef __HEAD_H__
 #define __HEAD_H__

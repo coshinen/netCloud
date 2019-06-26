@@ -1,13 +1,6 @@
- ///
- /// @file    head.h
- /// @author  mistydew(mistydew@qq.com)
- /// @date    2017-09-13 15:05:00
- ///
-
- // 命名规范：
- // 变量名：变量小写 + 修饰首字母大写
- // 函数：动词小写 + 名词首字母大写
- // RETURN为-1表示错误，0表示正常结束，1表示开始标志 
+// Copyright (c) 2017-2019 mistydew
+// Distributed under the MIT software license, see the accompanying
+// file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef __HEAD_H__
 #define __HEAD_H__

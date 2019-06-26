@@ -1,8 +1,6 @@
- ///
- /// @file    threadhandler.c
- /// @author  mistydew(mistydew@qq.com)
- /// @date    2017-09-14 21:20:12
- ///
+// Copyright (c) 2017-2019 mistydew
+// Distributed under the MIT software license, see the accompanying
+// file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  
 #include "threadhandler.h"
 
