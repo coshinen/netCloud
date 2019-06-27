@@ -31,19 +31,6 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-int exitfd[2]; // 异步拉起同步
 static char * ROOTPATH = "/tmp/netCloud/";
-
-void LicenseInfo();
-void HelpMessage();
-void GetDefaultDataDir(char* path);
-void GetDataDir(char* path);
-void GetConfigFile(char* path);
-char** ReadConfigFile(char*);
-void setExit(); // 退出机制
-int sblSocket(char**); // init socket, bind, listen
-
-void createMysqlUserInfo();
-void createMysqlFileSystem();
 
 #endif

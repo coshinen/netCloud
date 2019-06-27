@@ -11,6 +11,8 @@
 
 void * threadHandler(void*); // 线程行为函数
 
+void createMysqlUserInfo();
+void createMysqlFileSystem();
 int verifyMysqlUserName(const char*, char*, char*, char*, char*, char*);
 int insertMysqlUserInfo(const char*, const char*, const char*, const char*, const char*, const char*, const char*);
 int updateMysqlUserInfo(const char*, const char*, const char*);

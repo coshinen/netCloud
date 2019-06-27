@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-#include "head.h"
+#include "util.h"
 
 void LicenseInfo()
 {
@@ -49,7 +49,7 @@ void GetConfigFile(char* path)
     sprintf(path, "%s%s%s", path, "/", "netCloud.conf");
 }
 
-char** ReadConfigFile(char* pathConfigFile)
+void ReadConfigFile(char* pathConfigFile)
 {
     int fdConfig = open(pathConfigFile, O_RDONLY);
 
@@ -76,7 +76,6 @@ char** ReadConfigFile(char* pathConfigFile)
     }
 
     close(fdConfig);
-    return argvConf;
 }
 
 void sigHandler(int signum)
@@ -99,21 +98,25 @@ void setExit()
     signal(SIGPIPE, SIG_IGN);
 }
 
-int sblSocket(char ** argv)
+int InitSocket()
 {
+    // Socket
     int sfd = socket(AF_INET, SOCK_STREAM, 0);
-    
-    int reuse = 1; // 设置端口重用
+
+    // Set socket port reuse
+    int reuse = 1;
     setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, (const void*)&reuse, sizeof(reuse));
-    
+
+    // Bind
     struct sockaddr_in ser;
     bzero(&ser, sizeof(struct sockaddr_in));
     ser.sin_family = AF_INET;
-    ser.sin_port = htons(atoi(argv[1]));
-    ser.sin_addr.s_addr = inet_addr(argv[0]);
+    ser.sin_port = htons(mapArgs.nPort);
+    ser.sin_addr.s_addr = inet_addr(mapArgs.sIP);
     bind(sfd, (struct sockaddr*)&ser, sizeof(ser));
-    
+
+    // Listen
     listen(sfd, 20);
-    
+
     return sfd;
 }

@@ -2,6 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
+#include "util.h"
 #include "threadhandler.h"
 
 int AppInit(int argc, char* argv[])
@@ -21,14 +22,13 @@ int AppInit(int argc, char* argv[])
         return -1;
     }
 
+    // Set this early so that parameter interactions go to console
     openlog(0, LOG_CONS | LOG_PID, LOG_LOCAL0);
 
     char pathConfigFile[1024] = {0};
     GetDataDir(pathConfigFile);
     GetConfigFile(pathConfigFile);
-    printf("%s\n", pathConfigFile);
-
-    char ** argvConf = ReadConfigFile(pathConfigFile);
+    ReadConfigFile(pathConfigFile);
 
     // Daemonize
     fprintf(stdout, "netCloud server starting\n");
@@ -58,19 +58,18 @@ int AppInit(int argc, char* argv[])
         close(idx);
     }
 #endif
-    int sfd = sblSocket(argvConf);
+    int sfd = InitSocket();
 
     createMysqlUserInfo();
     createMysqlFileSystem();
 
     Factory_t factory;
     bzero(&factory, sizeof(Factory_t));
-    int numThread = atol(argvConf[2]);
-    factoryInit(&factory, numThread, threadHandler);
+    factoryInit(&factory, mapArgs.nThreads, threadHandler);
     factoryStart(&factory);
 
     int epfd = epoll_create(1);
-    struct epoll_event ev, evs[2 + numThread];
+    struct epoll_event ev, evs[2 + mapArgs.nThreads];
     bzero(&ev, sizeof(struct epoll_event));
     ev.events = EPOLLIN;
     ev.data.fd = sfd;
@@ -94,7 +93,7 @@ int AppInit(int argc, char* argv[])
         pTemp = factory._que._pHead;
     
         bzero(evs, sizeof(evs));
-        retEp = epoll_wait(epfd, evs, 2 + numThread, -1);
+        retEp = epoll_wait(epfd, evs, 2 + mapArgs.nThreads, -1);
         
         for (idx = 0; idx < retEp; ++idx)
         {
@@ -225,7 +224,7 @@ int AppInit(int argc, char* argv[])
                 epoll_ctl(epfd, EPOLL_CTL_DEL, sfd, &ev);
                 close(sfd);
             
-                for (int idx = 0; idx != numThread; ++idx)
+                for (int idx = 0; idx != mapArgs.nThreads; ++idx)
                 {
                     pthread_cancel(factory._pThreadId[idx]);
                     printf("cancel pthid = %lu\n", factory._pThreadId[idx]);
@@ -239,14 +238,7 @@ int AppInit(int argc, char* argv[])
         }
     }
 LabelExit:
-    for (idx = 0; idx != 3; ++idx)
-    {
-        free(argvConf[idx]);
-    }
-    free(argvConf);
-    
     closelog();
-
     return 0;
 }
 
