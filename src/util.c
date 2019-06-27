@@ -19,11 +19,26 @@ void HelpMessage()
                        "       This help message\n\n"
                        "  -version\n"
                        "       Print version and exit\n\n"
-                       "  -port\n"
-                       "       Set socket port\n\n"
+                       "  -conf=<file>\n"
+                       "       Specify configuration file (default: netcloud.conf)\n\n"
+                       "  -daemon\n"
+                       "       Run in the background as a daemon and accept commands\n\n"
+                       "  -datadir=<dir>\n"
+                       "       Specify data directory\n\n"
+                       "Connection options:\n\n"
+                       "  -bind=<addr>\n"
+                       "       Bind to given address and always listen to it (default: 127.0.0.1)\n\n"
+                       "  -listen\n"
+                       "       Accept connections from outside (default: 2)\n\n"
+                       "  -port=<port>\n"
+                       "       Listen for connections on <port> (default: 8888)\n\n"
                        "  -threads\n"
-                       "       Set thread number\n"};
+                       "       Set the number of threads to service RPC calls (default: 2)\n"};
     fprintf(stdout, "%s", strUsage);
+}
+
+void ParseParameters(int argc, char* argv[])
+{
 }
 
 void GetDefaultDataDir(char* path)

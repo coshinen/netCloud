@@ -7,8 +7,14 @@
 
 #include "head.h"
 
+#include <stdbool.h>
+
 typedef struct {
+    char pathConf[1024];
+    _Bool bDaemon;
+    char pathDataDir[1024];
     char sIP[16];
+    int nConn;
     unsigned short nPort;
     int nThreads;
 } Conf;
@@ -17,6 +23,7 @@ Conf mapArgs;
 
 void LicenseInfo();
 void HelpMessage();
+void ParseParameters(int argc, char* argv[]);
 void GetDefaultDataDir(char* path);
 void GetDataDir(char* path);
 void GetConfigFile(char* path);

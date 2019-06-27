@@ -7,7 +7,10 @@
 
 int AppInit(int argc, char* argv[])
 {
-    // Parameters: process help and version before taking care about datadir
+    // Parameters
+    ParseParameters(argc, argv);
+
+    //process help and version before taking care about datadir
     if (!strcmp(argv[1], "-?") || !strcmp(argv[1], "-h") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "-version"))
     {
         if (!strcmp(argv[1], "-version"))
