@@ -9,6 +9,7 @@ int AppInit(int argc, char* argv[])
 {
     // Parameters
     ParseParameters(argc, argv);
+    printf("%s\n%d\n%s\n%s\n%d\n%d\n%d\n", mapArgs.pathConf, mapArgs.bDaemon, mapArgs.pathDataDir, mapArgs.sIP, mapArgs.nConn, mapArgs.nPort, mapArgs.nThreads);
 
     //process help and version before taking care about datadir
     if (!strcmp(argv[1], "-?") || !strcmp(argv[1], "-h") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "-version"))

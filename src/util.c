@@ -4,6 +4,43 @@
 
 #include "util.h"
 
+void ParseParameters(int argc, char* argv[])
+{
+    for (int idx = 1; idx != argc; ++idx)
+    {
+        if (argv[idx][0] != '-')
+            break;
+
+        char str[1024] = {0};
+        strcpy(str, argv[idx]);
+        char strValue[1024] = {0};
+        int is_idx = 1;
+        int strLen = strlen(str);
+        for (; is_idx != strLen && str[is_idx] != '='; ++is_idx);
+        if (is_idx != strLen)
+        {
+            str[is_idx] = '\0';
+            for (int i = 0; is_idx + 1 != strLen; ++i, ++is_idx)
+                strValue[i] = str[is_idx + 1];
+        }
+
+        if (!strcmp(str, "-conf"))
+            strcpy(mapArgs.pathConf, strValue);
+        else if (!strcmp(str, "-daemon"))
+            mapArgs.bDaemon = atoi(strValue);
+        else if (!strcmp(str, "-datadir"))
+            strcpy(mapArgs.pathDataDir, strValue);
+        else if (!strcmp(str, "-ip"))
+            strcpy(mapArgs.sIP, strValue);
+        else if (!strcmp(str, "-conn"))
+            mapArgs.nConn = atoi(strValue);
+        else if (!strcmp(str, "-port"))
+            mapArgs.nPort = atoi(strValue);
+        else if (!strcmp(str, "-threads"))
+            mapArgs.nThreads = atoi(strValue);
+    }
+}
+
 void LicenseInfo()
 {
     char versionInfo[] = {"netCloud Core Daemon version v0.0.1.0\n"};
@@ -35,10 +72,6 @@ void HelpMessage()
                        "  -threads\n"
                        "       Set the number of threads to service RPC calls (default: 2)\n"};
     fprintf(stdout, "%s", strUsage);
-}
-
-void ParseParameters(int argc, char* argv[])
-{
 }
 
 void GetDefaultDataDir(char* path)
@@ -93,26 +126,6 @@ void ReadConfigFile(char* pathConfigFile)
     close(fdConfig);
 }
 
-void sigHandler(int signum)
-{
-    char flag = 1;
-    write(exitfd[1], &flag, sizeof(char));
-}
-
-void setExit()
-{
-    pipe(exitfd);
-    if (fork()) {
-        close(exitfd[0]);
-        signal(SIGINT, sigHandler);
-        wait(NULL);
-        exit(0);
-    }
-    close(exitfd[1]);
-    setsid();
-    signal(SIGPIPE, SIG_IGN);
-}
-
 int InitSocket()
 {
     // Socket
@@ -134,4 +147,24 @@ int InitSocket()
     listen(sfd, 20);
 
     return sfd;
+}
+
+void sigHandler(int signum)
+{
+    char flag = 1;
+    write(exitfd[1], &flag, sizeof(char));
+}
+
+void setExit()
+{
+    pipe(exitfd);
+    if (fork()) {
+        close(exitfd[0]);
+        signal(SIGINT, sigHandler);
+        wait(NULL);
+        exit(0);
+    }
+    close(exitfd[1]);
+    setsid();
+    signal(SIGPIPE, SIG_IGN);
 }

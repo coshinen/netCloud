@@ -21,14 +21,14 @@ typedef struct {
 
 Conf mapArgs;
 
+void ParseParameters(int argc, char* argv[]);
 void LicenseInfo();
 void HelpMessage();
-void ParseParameters(int argc, char* argv[]);
 void GetDefaultDataDir(char* path);
 void GetDataDir(char* path);
 void GetConfigFile(char* path);
 void ReadConfigFile(char*);
-int InitSocket(); // socket, bind, listen
+int InitSocket();
 
 int exitfd[2]; // 异步拉起同步
 void setExit(); // 退出机制
