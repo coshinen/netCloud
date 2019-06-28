@@ -47,14 +47,17 @@ int AppInit(int argc, char* argv[])
         return -1;
     }
 
-    // Set this early so that parameter interactions go to console
-    openlog(0, LOG_CONS | LOG_PID, LOG_LOCAL0);
-
     char pathConfigFile[1024] = {0};
     GetDataDir(pathConfigFile);
     GetConfigFile(pathConfigFile);
     ReadConfigFile(pathConfigFile);
-    fprintf(stdout, "%s\n%d\n%s\n%s\n%d\n%d\n%d\n", mapArgs.pathConf, mapArgs.fDaemon, mapArgs.pathDataDir, mapArgs.sIP, mapArgs.nConn, mapArgs.nPort, mapArgs.nThreads);
+    fprintf(stdout, "config file path: %s\n"
+                    "data dir path: %s\n"
+                    "daemon: %d\n"
+                    "ip: %s\n"
+                    "connection: %d\n"
+                    "port: %d\n"
+                    "threads: %d\n", mapArgs.pathConf, mapArgs.pathDataDir, mapArgs.fDaemon, mapArgs.sIP, mapArgs.nConn, mapArgs.nPort, mapArgs.nThreads);
 
     // Daemonize
     if (mapArgs.fDaemon)
@@ -87,6 +90,9 @@ int AppInit(int argc, char* argv[])
         }
 #endif
     }
+    // Set this early so that parameter interactions go to console
+    openlog(0, LOG_CONS | LOG_PID, LOG_LOCAL0);
+
     WaitForShutdown();
     int sfd = InitSocket();
 

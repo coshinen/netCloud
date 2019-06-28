@@ -11,8 +11,8 @@
 
 typedef struct {
     char pathConf[1024];
-    _Bool fDaemon;
     char pathDataDir[1024];
+    _Bool fDaemon;
     char sIP[16];
     int nConn;
     unsigned short nPort;

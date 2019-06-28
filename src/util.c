@@ -26,10 +26,10 @@ void ParseParameters(int argc, char* argv[])
 
         if (!strcmp(str, "-conf"))
             strcpy(mapArgs.pathConf, strValue);
-        else if (!strcmp(str, "-daemon"))
-            mapArgs.fDaemon = atoi(strValue);
         else if (!strcmp(str, "-datadir"))
             strcpy(mapArgs.pathDataDir, strValue);
+        else if (!strcmp(str, "-daemon"))
+            mapArgs.fDaemon = atoi(strValue);
         else if (!strcmp(str, "-ip"))
             strcpy(mapArgs.sIP, strValue);
         else if (!strcmp(str, "-conn"))
@@ -94,7 +94,7 @@ void GetDataDir(char* path)
 
 void GetConfigFile(char* path)
 {
-    sprintf(path, "%s%s%s", path, "/", "netCloud.conf");
+    sprintf(path, "%s%s%s", path, "/", "netcloud.conf");
 }
 
 void ReadConfigFile(char* pathConfigFile)
@@ -115,17 +115,45 @@ void ReadConfigFile(char* pathConfigFile)
     for (int idx = 0; idx != lens; ++idx)
         argvConf[idx] = (char*)calloc(1, sizeof(char) * 64);
 
-    for (int idx = 0, y =0; idx != strlen(buf); ++idx)
+    for (int idx = 0, x = 0, y = 0; idx != strlen(buf) && y != lens; ++idx)
     {
-        if (buf[idx] == '=')
+        if (buf[idx] != '\n')
         {
-            ++idx;
-            for (int x = 0; buf[idx] != '\n'; ++idx, ++x)
-            {
-                argvConf[y][x] = buf[idx];
-            }
-            ++y;
+            argvConf[y][x] = buf[idx];
+            ++x;
         }
+        else
+        {
+            ++y;
+            x = 0;
+        }
+    }
+
+    for (int idx = 0; idx != lens; ++idx)
+    {
+        char str[64] = {0};
+        strcpy(str, argvConf[idx]);
+        char strValue[16] = {0};
+        int is_idx = 1;
+        int strLen = strlen(str);
+        for (; is_idx != strLen && str[is_idx] != '='; ++is_idx);
+        if (is_idx != strLen)
+        {
+            str[is_idx] = '\0';
+            for (int i = 0; is_idx + 1 != strLen; ++i, ++is_idx)
+                strValue[i] = str[is_idx + 1];
+        }
+
+        if (!strcmp(str, "daemon"))
+            mapArgs.fDaemon = atoi(strValue);
+        else if (!strcmp(str, "ip"))
+            strcpy(mapArgs.sIP, strValue);
+        else if (!strcmp(str, "conn"))
+            mapArgs.nConn = atoi(strValue);
+        else if (!strcmp(str, "port"))
+            mapArgs.nPort = atoi(strValue);
+        else if (!strcmp(str, "threads"))
+            mapArgs.nThreads = atoi(strValue);
     }
 
     for (int idx = 0; idx != lens; ++idx)
