@@ -27,7 +27,7 @@ void ParseParameters(int argc, char* argv[])
         if (!strcmp(str, "-conf"))
             strcpy(mapArgs.pathConf, strValue);
         else if (!strcmp(str, "-daemon"))
-            mapArgs.bDaemon = atoi(strValue);
+            mapArgs.fDaemon = atoi(strValue);
         else if (!strcmp(str, "-datadir"))
             strcpy(mapArgs.pathDataDir, strValue);
         else if (!strcmp(str, "-ip"))
@@ -101,14 +101,19 @@ void ReadConfigFile(char* pathConfigFile)
 {
     int fdConfig = open(pathConfigFile, O_RDONLY);
 
-    char buf[1024] = {0};
-    read(fdConfig, buf, sizeof(char) * 1024);
+    char buf[4096] = {0};
+    read(fdConfig, buf, sizeof(char) * 4096);
 
-    char ** argvConf = (char**)calloc(3, sizeof(char*));
-    for (int idx = 0; idx != 3; ++idx)
+    int lens = 0;
+    for (int idx = 0; idx != strlen(buf); ++idx)
     {
-        argvConf[idx] = (char*)calloc(1, sizeof(char) * 16);
+        if (buf[idx] == '\n')
+            ++lens;
     }
+
+    char ** argvConf = (char**)calloc(lens, sizeof(char*));
+    for (int idx = 0; idx != lens; ++idx)
+        argvConf[idx] = (char*)calloc(1, sizeof(char) * 64);
 
     for (int idx = 0, y =0; idx != strlen(buf); ++idx)
     {
@@ -123,6 +128,9 @@ void ReadConfigFile(char* pathConfigFile)
         }
     }
 
+    for (int idx = 0; idx != lens; ++idx)
+        free(argvConf[idx]);
+    free(argvConf);
     close(fdConfig);
 }
 
@@ -147,24 +155,4 @@ int InitSocket()
     listen(sfd, 20);
 
     return sfd;
-}
-
-void sigHandler(int signum)
-{
-    char flag = 1;
-    write(exitfd[1], &flag, sizeof(char));
-}
-
-void setExit()
-{
-    pipe(exitfd);
-    if (fork()) {
-        close(exitfd[0]);
-        signal(SIGINT, sigHandler);
-        wait(NULL);
-        exit(0);
-    }
-    close(exitfd[1]);
-    setsid();
-    signal(SIGPIPE, SIG_IGN);
 }

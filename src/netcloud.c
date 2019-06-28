@@ -5,11 +5,32 @@
 #include "util.h"
 #include "threadhandler.h"
 
+int exitfd[2]; // 异步拉起同步
+
+void SigHandler(int signum)
+{
+    char flag = 1;
+    write(exitfd[1], &flag, sizeof(char));
+}
+
+void WaitForShutdown()
+{
+    pipe(exitfd);
+    if (fork()) {
+        close(exitfd[0]);
+        signal(SIGINT, SigHandler);
+        wait(NULL);
+        exit(0);
+    }
+    close(exitfd[1]);
+    setsid();
+    signal(SIGPIPE, SIG_IGN);
+}
+
 int AppInit(int argc, char* argv[])
 {
     // Parameters
     ParseParameters(argc, argv);
-    printf("%s\n%d\n%s\n%s\n%d\n%d\n%d\n", mapArgs.pathConf, mapArgs.bDaemon, mapArgs.pathDataDir, mapArgs.sIP, mapArgs.nConn, mapArgs.nPort, mapArgs.nThreads);
 
     //process help and version before taking care about datadir
     if (!strcmp(argv[1], "-?") || !strcmp(argv[1], "-h") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "-version"))
@@ -33,35 +54,40 @@ int AppInit(int argc, char* argv[])
     GetDataDir(pathConfigFile);
     GetConfigFile(pathConfigFile);
     ReadConfigFile(pathConfigFile);
+    fprintf(stdout, "%s\n%d\n%s\n%s\n%d\n%d\n%d\n", mapArgs.pathConf, mapArgs.fDaemon, mapArgs.pathDataDir, mapArgs.sIP, mapArgs.nConn, mapArgs.nPort, mapArgs.nThreads);
 
     // Daemonize
-    fprintf(stdout, "netCloud server starting\n");
-    pid_t pid = fork();
-    if (pid < 0)
+    if (mapArgs.fDaemon)
     {
-        fprintf(stderr, "Error: fork() returned %d errno %d\n", pid, errno);
-        return -1;
-    }
-    if (pid > 0) // Parent process, pid is child process id
-    {
-        return 0;
-    }
-    // Child process falls through to rest of initialization
+        fprintf(stdout, "netCloud server starting\n");
+        pid_t pid = fork();
+        if (pid < 0)
+        {
+            fprintf(stderr, "Error: fork() returned %d errno %d\n", pid, errno);
+            return -1;
+        }
+        if (pid > 0) // Parent process, pid is child process id
+        {
+            return 0;
+        }
+        // Child process falls through to rest of initialization
 
-    pid_t sid = setsid();
-    if (sid < 0)
-        fprintf(stderr, "Error: setsid() returned %d errno %d\n", sid, errno);
+        pid_t sid = setsid();
+        if (sid < 0)
+            fprintf(stderr, "Error: setsid() returned %d errno %d\n", sid, errno);
 
-    umask(0);
+        umask(0);
 
-    mkdir(ROOTPATH, 0775);
-    chdir(ROOTPATH);
+        mkdir(ROOTPATH, 0775);
+        chdir(ROOTPATH);
 #if 0
-    for (int idx = 0; idx != 3; ++idx)
-    {
-        close(idx);
-    }
+        for (int idx = 0; idx != 3; ++idx)
+        {
+            close(idx);
+        }
 #endif
+    }
+    WaitForShutdown();
     int sfd = InitSocket();
 
     createMysqlUserInfo();
