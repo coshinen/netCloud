@@ -42,6 +42,8 @@ void ParseParameters(int argc, char* argv[])
             strcpy(mapArgs.sMysqlUsername, strValue);
         else if (!strcmp(str, "-mysqlpassword"))
             strcpy(mapArgs.sMysqlPassword, strValue);
+        else if (!strcmp(str, "-mysqldb"))
+            strcpy(mapArgs.sMysqlDB, strValue);
     }
 }
 
@@ -162,6 +164,8 @@ void ReadConfigFile(char* pathConfigFile)
             strcpy(mapArgs.sMysqlUsername, strValue);
         else if (!strcmp(str, "-mysqlpassword"))
             strcpy(mapArgs.sMysqlPassword, strValue);
+        else if (!strcmp(str, "-mysqldb"))
+            strcpy(mapArgs.sMysqlDB, strValue);
     }
 
     for (int idx = 0; idx != lens; ++idx)

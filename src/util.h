@@ -19,6 +19,7 @@ typedef struct {
     int nThreads;
     char sMysqlUsername[16];
     char sMysqlPassword[16];
+    char sMysqlDB[16];
 } Conf;
 
 Conf mapArgs;

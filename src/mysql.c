@@ -10,7 +10,7 @@ void createMysqlUserInfo()
 {
     MYSQL mysql;
     mysql_init(&mysql);
-    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, "ftps", 0, NULL, 0)) {
+    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, mapArgs.sMysqlDB, 0, NULL, 0)) {
         mysql_close(&mysql);
         fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
         return;
@@ -33,7 +33,7 @@ void createMysqlFileSystem()
 {
     MYSQL mysql;
     mysql_init(&mysql);
-    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, "ftps", 0, NULL, 0)) {
+    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, mapArgs.sMysqlDB, 0, NULL, 0)) {
         mysql_close(&mysql);
         fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
         return;
@@ -57,7 +57,7 @@ int verifyMysqlUserName(const char * userName, char * passwd, char * salt, char 
     int flag = -1;
     MYSQL mysql;
     mysql_init(&mysql);
-    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, "ftps", 0, NULL, 0)) {
+    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, mapArgs.sMysqlDB, 0, NULL, 0)) {
         mysql_close(&mysql);
         fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
         return -1;
@@ -103,7 +103,7 @@ int insertMysqlUserInfo(const char * userName, const char * passwd, const char *
 {
     MYSQL mysql;
     mysql_init(&mysql);
-    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, "ftps", 0, NULL, 0)) {
+    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, mapArgs.sMysqlDB, 0, NULL, 0)) {
         mysql_close(&mysql);
         fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
         return -1;
@@ -129,7 +129,7 @@ int updateMysqlUserInfo(const char * userName, const char * signinIp, const char
 {
     MYSQL mysql;
     mysql_init(&mysql);
-    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, "ftps", 0, NULL, 0)) {
+    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, mapArgs.sMysqlDB, 0, NULL, 0)) {
         mysql_close(&mysql);
         fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
         return -1;
@@ -166,7 +166,7 @@ int verifyMysqlFileSystem(int * curInode, char * fileType, char * pathName, int 
     int flag = -1;
     MYSQL mysql;
     mysql_init(&mysql);
-    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, "ftps", 0, NULL, 0)) {
+    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, mapArgs.sMysqlDB, 0, NULL, 0)) {
         mysql_close(&mysql);
         fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
         return -1;
@@ -225,7 +225,7 @@ int insertMysqlFileSystem(const char * userName, int preInode, const char * file
 {
     MYSQL mysql;
     mysql_init(&mysql);
-    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, "ftps", 0, NULL, 0)) {
+    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, mapArgs.sMysqlDB, 0, NULL, 0)) {
         mysql_close(&mysql);
         fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
         return -1;
@@ -251,7 +251,7 @@ int updateMysqlFileSystem(const char * newFileName, const char * newPathName, co
 {
     MYSQL mysql;
     mysql_init(&mysql);
-    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, "ftps", 0, NULL, 0)) {
+    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, mapArgs.sMysqlDB, 0, NULL, 0)) {
         mysql_close(&mysql);
         fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
         return -1;
@@ -316,7 +316,7 @@ int deleteMysqlFileSystem(const char * pathName)
 {
     MYSQL mysql;
     mysql_init(&mysql);
-    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, "ftps", 0, NULL, 0)) {
+    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, mapArgs.sMysqlDB, 0, NULL, 0)) {
         mysql_close(&mysql);
         fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
         return -1;
