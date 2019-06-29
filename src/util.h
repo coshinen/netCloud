@@ -10,13 +10,15 @@
 #include <stdbool.h>
 
 typedef struct {
-    char pathConf[1024];
-    char pathDataDir[1024];
+    char sConf[1024];
+    char sDataDir[1024];
     _Bool fDaemon;
     char sIP[16];
     int nConn;
     unsigned short nPort;
     int nThreads;
+    char sMysqlUsername[16];
+    char sMysqlPassword[16];
 } Conf;
 
 Conf mapArgs;

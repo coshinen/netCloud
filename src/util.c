@@ -25,9 +25,9 @@ void ParseParameters(int argc, char* argv[])
         }
 
         if (!strcmp(str, "-conf"))
-            strcpy(mapArgs.pathConf, strValue);
+            strcpy(mapArgs.sConf, strValue);
         else if (!strcmp(str, "-datadir"))
-            strcpy(mapArgs.pathDataDir, strValue);
+            strcpy(mapArgs.sDataDir, strValue);
         else if (!strcmp(str, "-daemon"))
             mapArgs.fDaemon = atoi(strValue);
         else if (!strcmp(str, "-ip"))
@@ -38,6 +38,10 @@ void ParseParameters(int argc, char* argv[])
             mapArgs.nPort = atoi(strValue);
         else if (!strcmp(str, "-threads"))
             mapArgs.nThreads = atoi(strValue);
+        else if (!strcmp(str, "-mysqlusername"))
+            strcpy(mapArgs.sMysqlUsername, strValue);
+        else if (!strcmp(str, "-mysqlpassword"))
+            strcpy(mapArgs.sMysqlPassword, strValue);
     }
 }
 
@@ -154,6 +158,10 @@ void ReadConfigFile(char* pathConfigFile)
             mapArgs.nPort = atoi(strValue);
         else if (!strcmp(str, "threads"))
             mapArgs.nThreads = atoi(strValue);
+        else if (!strcmp(str, "-mysqlusername"))
+            strcpy(mapArgs.sMysqlUsername, strValue);
+        else if (!strcmp(str, "-mysqlpassword"))
+            strcpy(mapArgs.sMysqlPassword, strValue);
     }
 
     for (int idx = 0; idx != lens; ++idx)

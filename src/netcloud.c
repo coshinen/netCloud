@@ -57,7 +57,7 @@ int AppInit(int argc, char* argv[])
                     "ip: %s\n"
                     "connection: %d\n"
                     "port: %d\n"
-                    "threads: %d\n", mapArgs.pathConf, mapArgs.pathDataDir, mapArgs.fDaemon, mapArgs.sIP, mapArgs.nConn, mapArgs.nPort, mapArgs.nThreads);
+                    "threads: %d\n", mapArgs.sConf, mapArgs.sDataDir, mapArgs.fDaemon, mapArgs.sIP, mapArgs.nConn, mapArgs.nPort, mapArgs.nThreads);
 
     // Daemonize
     if (mapArgs.fDaemon)

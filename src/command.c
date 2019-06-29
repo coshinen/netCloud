@@ -2,6 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
+#include "util.h"
 #include "threadhandler.h"
 
 int getCommand(pNode_t pNode, pFactory_t pFactory)
@@ -260,7 +261,7 @@ int listFiles(pNode_t pNode, char ** cmd)
     
     MYSQL mysql;
     mysql_init(&mysql);
-    if (!mysql_real_connect(&mysql, "localhost", "root", "2333", "ftps", 0, NULL, 0)) {
+    if (!mysql_real_connect(&mysql, "localhost", mapArgs.sMysqlUsername, mapArgs.sMysqlPassword, "ftps", 0, NULL, 0)) {
         mysql_close(&mysql);
         fprintf(stderr, "Failed to connect to database: Error: %s\n", mysql_error(&mysql));
         return -1;
