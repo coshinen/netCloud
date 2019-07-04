@@ -5,8 +5,6 @@
 #ifndef __MYSQL_H__
 #define __MYSQL_H__
 
-#include "head.h"
-
 void createMysqlUserInfo();
 void createMysqlFileSystem();
 int verifyMysqlUserName(const char*, char*, char*, char*, char*, char*);

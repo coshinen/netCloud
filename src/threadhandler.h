@@ -5,10 +5,6 @@
 #ifndef __THREADHANDLER_H__
 #define __THREADHANDLER_H__
 
-#include "head.h"
-#include "taskqueue.h"
-#include "factory.h"
-
 void * threadHandler(void*); // 线程行为函数
 
 #endif

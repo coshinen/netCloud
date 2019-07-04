@@ -5,9 +5,9 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
-#include "head.h"
-
 #include <stdbool.h>
+
+#include "head.h"
 
 typedef struct {
     char sConf[1024];

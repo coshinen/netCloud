@@ -5,7 +5,7 @@
 #ifndef __SIGNUPIN_H__
 #define __SIGNUPIN_H__
 
-#include "head.h"
+#include "taskqueue.h"
 
 void GetSalt(char*, const char*);
 int SignUp(pNode_t);

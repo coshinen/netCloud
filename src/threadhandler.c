@@ -4,6 +4,8 @@
  
 #include "threadhandler.h"
 
+#include "factory.h"
+
 void cleanupCondMutex(void * p)
 {
     pthread_mutex_t * mutex = (pthread_mutex_t*)p;

@@ -4,6 +4,7 @@
  
 #include "signupin.h"
 
+#include "factory.h"
 #include "threadhandler.h"
 
 void GetSalt(char * salt, const char * passwd)
