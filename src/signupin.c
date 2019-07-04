@@ -7,6 +7,8 @@
 #include "factory.h"
 #include "threadhandler.h"
 
+#include <syslog.h>
+
 void GetSalt(char * salt, const char * passwd)
 {
     int idx, i$;

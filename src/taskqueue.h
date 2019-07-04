@@ -5,7 +5,7 @@
 #ifndef __TASKQUE_H__
 #define __TASKQUE_H__
 
-#include "head.h"
+#include <pthread.h>
 
 typedef struct Node { // 存放网络描述符链式结点
     int _sfdNew;

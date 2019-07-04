@@ -7,6 +7,13 @@
 #include "threadhandler.h"
 #include "rpcserver.h"
 
+#include <stdio.h>
+#include <signal.h>
+#include <sys/epoll.h>
+#include <netinet/in.h>
+#include <errno.h>
+#include <syslog.h>
+
 int exitfd[2]; // 异步拉起同步
 
 void SigHandler(int signum)

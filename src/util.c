@@ -4,6 +4,11 @@
 
 #include "util.h"
 
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
 void ParseParameters(int argc, char* argv[])
 {
     for (int idx = 1; idx != argc; ++idx)

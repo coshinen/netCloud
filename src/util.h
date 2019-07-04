@@ -7,8 +7,6 @@
 
 #include <stdbool.h>
 
-#include "head.h"
-
 typedef struct {
     char sConf[1024];
     char sDataDir[1024];

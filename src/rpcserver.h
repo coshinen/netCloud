@@ -8,6 +8,8 @@
 #include "taskqueue.h"
 #include "factory.h"
 
+#include <sys/types.h>
+
 int GetCommand(pNode_t, pFactory_t);
 char ** parseCommand(const char*);
 int selectCommand(char**, pNode_t, pFactory_t);

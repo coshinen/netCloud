@@ -5,7 +5,6 @@
 #ifndef __FACTORY_H__
 #define __FACTORY_H__
 
-#include "head.h"
 #include "taskqueue.h"
 
 typedef struct { // 火车模型

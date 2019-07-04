@@ -7,6 +7,9 @@
 #include "util.h"
 #include "threadhandler.h"
 
+#include <stdio.h>
+#include <mysql/mysql.h>
+
 void createMysqlUserInfo()
 {
     MYSQL mysql;

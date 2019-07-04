@@ -6,6 +6,12 @@
 
 #include "util.h"
 
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <mysql/mysql.h>
+#include <syslog.h>
+
 int GetCommand(pNode_t pNode, pFactory_t pFactory)
 {
     Train_t train;
