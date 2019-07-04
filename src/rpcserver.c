@@ -2,10 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-#include "util.h"
-#include "threadhandler.h"
+#include "rpcserver.h"
 
-int getCommand(pNode_t pNode, pFactory_t pFactory)
+#include "util.h"
+
+int GetCommand(pNode_t pNode, pFactory_t pFactory)
 {
     Train_t train;
     char ** cmd;

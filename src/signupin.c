@@ -3,6 +3,7 @@
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  
 #include "signupin.h"
+
 #include "threadhandler.h"
 
 void GetSalt(char * salt, const char * passwd)

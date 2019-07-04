@@ -5,6 +5,7 @@
 #include "util.h"
 #include "signupin.h"
 #include "threadhandler.h"
+#include "rpcserver.h"
 
 int exitfd[2]; // 异步拉起同步
 
@@ -216,7 +217,7 @@ int AppInit(int argc, char* argv[])
                             continue;
                         }
                     } else if (7 == pCur->_flagSigninStatus) { // Sign in succeeded
-                        ret = getCommand(pCur, &factory);
+                        ret = GetCommand(pCur, &factory);
                         if (-1 == ret) {
                             syslog(LOG_INFO, "[user] %s [info] %s\n", pCur->_user, "Sign out");
                             bzero(&ev, sizeof(struct epoll_event));

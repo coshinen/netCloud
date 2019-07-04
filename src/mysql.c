@@ -3,6 +3,7 @@
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  
 #include "mysql.h"
+
 #include "util.h"
 #include "threadhandler.h"
 
