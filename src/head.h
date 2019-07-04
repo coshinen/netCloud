@@ -31,6 +31,4 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-static char * ROOTPATH = "/tmp/netCloud/";
-
 #endif

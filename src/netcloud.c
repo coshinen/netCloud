@@ -49,10 +49,9 @@ int AppInit(int argc, char* argv[])
         return -1;
     }
 
-    char pathConfigFile[1024] = {0};
-    GetDataDir(pathConfigFile);
-    GetConfigFile(pathConfigFile);
-    ReadConfigFile(pathConfigFile);
+    GetDataDir();
+    GetConfigFile();
+    ReadConfigFile(mapArgs.sConf);
     fprintf(stdout, "config file path: %s\n"
                     "data dir path: %s\n"
                     "daemon: %d\n"
@@ -83,8 +82,8 @@ int AppInit(int argc, char* argv[])
 
         umask(0);
 
-        mkdir(ROOTPATH, 0775);
-        chdir(ROOTPATH);
+        mkdir(mapArgs.sDataDir, 0775);
+        chdir(mapArgs.sDataDir);
 #if 0
         for (int idx = 0; idx != 3; ++idx)
         {
@@ -148,7 +147,7 @@ int AppInit(int argc, char* argv[])
                 pNode->_sfdNew = sfdNew;
                 strcpy(pNode->_ip, inet_ntoa(cli.sin_addr));
                 pNode->_port = ntohs(cli.sin_port);
-                strcpy(pNode->_path, ROOTPATH);
+                strcpy(pNode->_path, mapArgs.sDataDir);
                 pNode->_idxLen = strlen(pNode->_path);
                 pNode->_inum = 0;
                 pNode->_lenDir[pNode->_inum] = strlen(pNode->_path);

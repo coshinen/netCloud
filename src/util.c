@@ -80,27 +80,27 @@ void HelpMessage()
     fprintf(stdout, "%s", strUsage);
 }
 
-void GetDefaultDataDir(char* path)
+void GetDefaultDataDir()
 {
     // Unix: ~/.netCloud
     char* pszHome = getenv("HOME");
     if (pszHome == NULL || strlen(pszHome) == 0)
-        strcpy(path, "/");
+        strcpy(mapArgs.sDataDir, "/");
     else
-        sprintf(path, "%s%s", pszHome, "/");
+        sprintf(mapArgs.sDataDir, "%s%s", pszHome, "/");
 
-    sprintf(path, "%s%s", path, ".netCloud");
+    sprintf(mapArgs.sDataDir, "%s%s%s", mapArgs.sDataDir, ".netCloud", "/");
 }
 
-void GetDataDir(char* path)
+void GetDataDir()
 {
-    GetDefaultDataDir(path);
-    mkdir(path, 0775);
+    GetDefaultDataDir();
+    mkdir(mapArgs.sDataDir, 0775);
 }
 
-void GetConfigFile(char* path)
+void GetConfigFile()
 {
-    sprintf(path, "%s%s%s", path, "/", "netcloud.conf");
+    sprintf(mapArgs.sConf, "%s%s", mapArgs.sDataDir, "netcloud.conf");
 }
 
 void ReadConfigFile(char* pathConfigFile)

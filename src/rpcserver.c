@@ -343,7 +343,7 @@ void printWorkingDirectory(pNode_t pNode)
 {
     Train_t train;
     bzero(&train, sizeof(Train_t));
-    strcpy(train._buf, pNode->_path + strlen(ROOTPATH) + strlen(pNode->_user));
+    strcpy(train._buf, pNode->_path + strlen(mapArgs.sDataDir) + strlen(pNode->_user));
     
     if (!strcmp("/", train._buf)) {
     } else {
@@ -411,9 +411,9 @@ void changeDirectory(pNode_t pNode, char * directory)
                 if (!strncmp("/", directory, 1)) {
                     char pathName[256] = {0};
                     if (!strcmp("/", directory)) {
-                        sprintf(pathName, "%s%s", ROOTPATH, pNode->_user);
+                        sprintf(pathName, "%s%s", mapArgs.sDataDir, pNode->_user);
                     } else {
-                        sprintf(pathName, "%s%s%s%s", ROOTPATH, pNode->_user, "/", directory + 1);
+                        sprintf(pathName, "%s%s%s%s", mapArgs.sDataDir, pNode->_user, "/", directory + 1);
                     }
                     char type[5] = {0};
                     int ret = verifyMysqlFileSystem(NULL, type, pathName, NULL, NULL, NULL);
@@ -455,19 +455,19 @@ void changeDirectory(pNode_t pNode, char * directory)
         pNode->_path[pNode->_idxLen] = 0;
         --pNode->_inum;
     } else if (0 == flag) { // cd
-        sprintf(pNode->_path, "%s%s%s", ROOTPATH, pNode->_user, "/");
-        pNode->_idxLen = strlen(ROOTPATH) + strlen(pNode->_user) + 1;
+        sprintf(pNode->_path, "%s%s%s", mapArgs.sDataDir, pNode->_user, "/");
+        pNode->_idxLen = strlen(mapArgs.sDataDir) + strlen(pNode->_user) + 1;
         pNode->_path[pNode->_idxLen] = 0;
         pNode->_inum = 0;
     } else if (3 == flag) { // / / /xx/xxx
         if (!strcmp("/", directory)) {
-            sprintf(pNode->_path, "%s%s%s", ROOTPATH, pNode->_user, "/");
-            pNode->_idxLen = strlen(ROOTPATH) + strlen(pNode->_user) + 1;
+            sprintf(pNode->_path, "%s%s%s", mapArgs.sDataDir, pNode->_user, "/");
+            pNode->_idxLen = strlen(mapArgs.sDataDir) + strlen(pNode->_user) + 1;
             pNode->_path[pNode->_idxLen] = 0;
             pNode->_inum = 0;
         } else {
-            sprintf(pNode->_path, "%s%s%s%s%s", ROOTPATH, pNode->_user, "/", directory + 1, "/");
-            pNode->_idxLen = strlen(ROOTPATH) + strlen(pNode->_user) + 1 + strlen(directory) -1 + 1;
+            sprintf(pNode->_path, "%s%s%s%s%s", mapArgs.sDataDir, pNode->_user, "/", directory + 1, "/");
+            pNode->_idxLen = strlen(mapArgs.sDataDir) + strlen(pNode->_user) + 1 + strlen(directory) -1 + 1;
             pNode->_path[pNode->_idxLen] = 0;
             
             char tempDirectory[256] = {0};
@@ -577,7 +577,7 @@ int getsFile(pNode_t pNode, const char * fileName)
             sendN(pNode->_sfdNew, &flag, sizeof(char));
 
             char pathNameReal[64] = {0};
-            sprintf(pathNameReal, "%s%s", ROOTPATH, md5);
+            sprintf(pathNameReal, "%s%s", mapArgs.sDataDir, md5);
             int fd = open(pathNameReal, O_RDONLY);
             if (-1 == fd) {
                 return 0;
@@ -734,7 +734,7 @@ int putsFile(pNode_t pNode, const char * fileName)
     }
     
     char pathNameReal[64] = {0};
-    sprintf(pathNameReal, "%s%s", ROOTPATH, md5);
+    sprintf(pathNameReal, "%s%s", mapArgs.sDataDir, md5);
     int fd = open(pathNameReal, O_CREAT | O_RDWR, 0666);
     
     off_t sizeFile;
@@ -829,7 +829,7 @@ void removeFile(pNode_t pNode, const char * fileName)
             
             if (1 == linkNumsFile) {
                 char pathNameReal[256] = {0};
-                sprintf(pathNameReal, "%s%s", ROOTPATH, md5);
+                sprintf(pathNameReal, "%s%s", mapArgs.sDataDir, md5);
                 unlink(pathNameReal);
             } else {
                 --linkNumsFile;

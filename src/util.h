@@ -27,9 +27,9 @@ Conf mapArgs;
 void ParseParameters(int argc, char* argv[]);
 void LicenseInfo();
 void HelpMessage();
-void GetDefaultDataDir(char* path);
-void GetDataDir(char* path);
-void GetConfigFile(char* path);
+void GetDefaultDataDir();
+void GetDataDir();
+void GetConfigFile();
 void ReadConfigFile(char*);
 int InitSocket();
 
