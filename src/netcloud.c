@@ -3,6 +3,7 @@
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
 #include "util.h"
+#include "signupin.h"
 #include "threadhandler.h"
 
 int exitfd[2]; // 异步拉起同步
@@ -181,7 +182,7 @@ int AppInit(int argc, char* argv[])
                             pCur->_flagSigninStatus = flag;
                         }
                     } else if (1 == pCur->_flagSigninStatus) { // Sign in
-                        ret = verifySignInInfo(pCur);
+                        ret = VerifySignInInfo(pCur);
                         if (-1 == ret) {
                             syslog(LOG_INFO, "[user] %s [info] %s\n", pCur->_user, "Sign out");
                             bzero(&ev, sizeof(struct epoll_event));
@@ -198,7 +199,7 @@ int AppInit(int argc, char* argv[])
                             continue;
                         }
                     } else if (2 == pCur->_flagSigninStatus) { // Sign up
-                        ret = signUp(pCur);
+                        ret = SignUp(pCur);
                         if (-1 == ret) {
                             syslog(LOG_INFO, "[user] %s [info] %s\n", pCur->_user, "Sign out");
                             bzero(&ev, sizeof(struct epoll_event));

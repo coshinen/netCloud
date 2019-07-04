@@ -11,20 +11,6 @@
 
 void * threadHandler(void*); // 线程行为函数
 
-void createMysqlUserInfo();
-void createMysqlFileSystem();
-int verifyMysqlUserName(const char*, char*, char*, char*, char*, char*);
-int insertMysqlUserInfo(const char*, const char*, const char*, const char*, const char*, const char*, const char*);
-int updateMysqlUserInfo(const char*, const char*, const char*);
-int verifyMysqlFileSystem(int*, char*, char*, int*, char*, int*);
-int insertMysqlFileSystem(const char*, int, const char*, const char*, const char*, const char*, int, const char*, int, const char*, int);
-int updateMysqlFileSystem(const char*, const char*, const char*, const int*, const char*);
-int deleteMysqlFileSystem(const char*);
-
-void getSalt(char*, const char*); // 获取盐值
-int signUp(pNode_t);
-int verifySignInInfo(pNode_t);
-
 int getCommand(pNode_t, pFactory_t);
 char ** parseCommand(const char*);
 int selectCommand(char**, pNode_t, pFactory_t);

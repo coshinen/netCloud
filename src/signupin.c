@@ -2,9 +2,10 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  
+#include "signupin.h"
 #include "threadhandler.h"
 
-void getSalt(char * salt, const char * passwd)
+void GetSalt(char * salt, const char * passwd)
 {
     int idx, i$;
     for (idx = 0, i$ = 0; i$ != 3 && idx != strlen(passwd); ++idx)
@@ -16,7 +17,7 @@ void getSalt(char * salt, const char * passwd)
     strncpy(salt, passwd, idx - 1);
 }
 
-int signUp(pNode_t pNode)
+int SignUp(pNode_t pNode)
 {
     int ret;
     char flag;
@@ -62,7 +63,7 @@ int signUp(pNode_t pNode)
         strcpy(passwd, train._buf);
     
         char salt[12] = {0};
-        getSalt(salt, passwd);
+        GetSalt(salt, passwd);
     
         char signupDate[20] = {0};
         time_t t;
@@ -85,7 +86,7 @@ int signUp(pNode_t pNode)
     return 0;
 }
 
-int verifySignInInfo(pNode_t pNode)
+int VerifySignInInfo(pNode_t pNode)
 {
     char flag;
     int ret;
