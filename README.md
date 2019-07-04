@@ -8,7 +8,7 @@ A customised protocol cloud storage.
 
 - [ ] code refactoring: logging system
 - [ ] code merge: server and client - move cli to src
-- [ ] code refactoring: distribution
+- [ ] code refactoring: distribution like bitcoin
 - [ ] code refactoring: replace c with cpp
 
 ## To Build
@@ -26,7 +26,7 @@ These dependencies are required:
 
 Library        | Purpose | Description
 ---------------|---------|-------------
-libssl         | Crypto  | Random Number Generation, Elliptic Curve Cryptography
+openssl        | Crypto  | Random Number Generation, Elliptic Curve Cryptography
 mysql          | MySQL   | Data storage, Cache
 libmysqlclient | MySQL   | Database operating
 
