@@ -4,7 +4,7 @@
 
 #include "signupin.h"
 
-#include "command.h"
+#include "rpcclient.h"
 
 #include <stdio.h>
 #include <time.h>

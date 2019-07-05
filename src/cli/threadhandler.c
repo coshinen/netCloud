@@ -4,7 +4,7 @@
 
 #include "threadhandler.h"
 
-#include "command.h"
+#include "rpcclient.h"
 
 void * ThreadHandler(void * p)
 {
