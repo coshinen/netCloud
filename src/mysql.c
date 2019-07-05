@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <mysql/mysql.h>
 
-void createMysqlUserInfo()
+void MysqlUserInfoInit()
 {
     MYSQL mysql;
     mysql_init(&mysql);
@@ -33,7 +33,7 @@ void createMysqlUserInfo()
     mysql_close(&mysql);
 }
 
-void createMysqlFileSystem()
+void MysqlFileSystemInit()
 {
     MYSQL mysql;
     mysql_init(&mysql);

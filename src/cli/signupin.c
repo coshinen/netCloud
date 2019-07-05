@@ -2,9 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
+#include "signupin.h"
+
 #include "head.h"
 
-void parseCommandStart(char * cmd)
+void ParseCommandStart(char * cmd)
 {
     for (int idx = 0, i = 0; idx != strlen(cmd); ++idx)
     {
@@ -19,7 +21,7 @@ void parseCommandStart(char * cmd)
     }
 }
 
-void getSalt(char * salt, int inum)
+void GetSalt(char * salt, int inum)
 {
     strcpy(salt, "$6$");
     char str[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,./;<>?:";
@@ -33,7 +35,7 @@ void getSalt(char * salt, int inum)
     }
 }
 
-int signUp(int sfd)
+int SignUp(int sfd)
 {
     char flag = -2;
     int ret;
@@ -79,7 +81,7 @@ LabelAgain:
     }
 
     char salt[12] = {0};
-    getSalt(salt, 11);
+    GetSalt(salt, 11);
 
     char * passwd = crypt(password, salt);
 
@@ -105,7 +107,7 @@ LabelAgain:
     return 0;
 }
 
-int verifySignInInfo(int sfd)
+int VerifySignInInfo(int sfd)
 {
     char flag;
     int ret;
@@ -166,11 +168,11 @@ LabelPassword:
         recvN(sfd, signinIpLast, sizeof(signinIpLast));
         recvN(sfd, signinDateLast, sizeof(signinDateLast));
     
-        printf("Welcome to Ftpd 0.2\n\n"
+        printf("Welcome to netCloud 0.1\n\n"
                 " * Documentation:         https://github.cm/mistydew/ftp-SkyDrive\n"
                 " * Management & Support:  https://mistydew@qq.com\n\n"
                 "Last login: %s from %s\n"
-                "Type `help' to learn how to use Ftpd prompt.\n", signinDateLast, signinIpLast);
+                "Type `help' to learn how to use netCloud prompt.\n", signinDateLast, signinIpLast);
     }
 
     sprintf(bash, "%s%s%s", username, "@", "ftpd:/");

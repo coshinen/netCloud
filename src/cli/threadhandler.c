@@ -2,9 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
+#include "threadhandler.h"
+
 #include "head.h"
 
-void * threadHandler(void * p)
+void * ThreadHandler(void * p)
 {
     pNode_t pNode = (pNode_t)p;
 puts("I am child thread");

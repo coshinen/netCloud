@@ -104,13 +104,12 @@ int AppInit(int argc, char* argv[])
     WaitForShutdown();
     int sfd = InitSocket();
 
-    createMysqlUserInfo();
-    createMysqlFileSystem();
+    MysqlUserInfoInit();
+    MysqlFileSystemInit();
 
     Factory_t factory;
     bzero(&factory, sizeof(Factory_t));
-    factoryInit(&factory, mapArgs.nThreads, threadHandler);
-    factoryStart(&factory);
+    FactoryInit(&factory, mapArgs.nThreads, ThreadHandler);
 
     int epfd = epoll_create(1);
     struct epoll_event ev, evs[2 + mapArgs.nThreads];

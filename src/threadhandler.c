@@ -19,7 +19,7 @@ void cleanup(void * p)
     free(pCur);
 }
 
-void * threadHandler(void * p)
+void * ThreadHandler(void * p)
 {
     pFactory_t pFactory = (pFactory_t)p;
     pQue_t pQue = &pFactory->_queFile;

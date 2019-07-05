@@ -7,9 +7,9 @@
 
 #include "taskqueue.h"
 
-typedef struct { // 火车模型
-    int _len; // 车头，存放车身的长度
-    char _buf[1024]; // 车身，存放要传输的数据
+typedef struct { // train modles
+    int _len; // head: the length of body
+    char _buf[1024]; // body: data
 } Train_t, * pTrain_t;
 
 typedef void * (*pthreadHandler_t)(void*);
@@ -23,7 +23,6 @@ typedef struct {
     short _flagStart;
 } Factory_t, * pFactory_t;
 
-void factoryInit(pFactory_t, int, pthreadHandler_t);
-void factoryStart(pFactory_t);
+void FactoryInit(pFactory_t, int, pthreadHandler_t);
 
 #endif

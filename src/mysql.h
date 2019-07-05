@@ -5,8 +5,8 @@
 #ifndef __MYSQL_H__
 #define __MYSQL_H__
 
-void createMysqlUserInfo();
-void createMysqlFileSystem();
+void MysqlUserInfoInit();
+void MysqlFileSystemInit();
 int verifyMysqlUserName(const char*, char*, char*, char*, char*, char*);
 int insertMysqlUserInfo(const char*, const char*, const char*, const char*, const char*, const char*, const char*);
 int updateMysqlUserInfo(const char*, const char*, const char*);

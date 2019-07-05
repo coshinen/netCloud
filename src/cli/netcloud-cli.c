@@ -17,7 +17,7 @@ int main(int argc, char * argv[])
 
     Node_t node;
     bzero(&node, sizeof(Node_t));
-    node._sfd = scSocket(argv);
+    node._sfd = InitSocket(argv);
 Label:
     printf("Type `signin' to Sign in.\n"
             "or `signup' to Sign up.\n"
@@ -29,7 +29,7 @@ Label:
     if (!strcmp("\n", cmd)) {
         goto Label;
     }
-    parseCommandStart(cmd);
+    ParseCommandStart(cmd);
     char flag = 0;
 
     int ret;
@@ -37,7 +37,7 @@ Label:
         flag = 2;
         sendN(node._sfd, &flag, sizeof(char));
         
-        ret = signUp(node._sfd);
+        ret = SignUp(node._sfd);
         if (0 == ret) {
             goto Label;
         }
@@ -45,7 +45,7 @@ Label:
         flag = 1;
         sendN(node._sfd, &flag, sizeof(char));
 
-        ret = verifySignInInfo(node._sfd);
+        ret = VerifySignInInfo(node._sfd);
         if (-1 == ret) {
             goto LabelExit;
         } else if (0 == ret) {

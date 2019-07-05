@@ -2,9 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
+#include "util.h"
+
 #include "head.h"
 
-int scSocket(char ** argv)
+int InitSocket(char ** argv)
 {
     int sfd = socket(AF_INET, SOCK_STREAM, 0);
     if (-1 == sfd) {
@@ -46,7 +48,7 @@ int getLocalIP(int sfd, char * ip)
     return 0;
 }
 #endif
-char ** readDownloadingConf(const char * args)
+char ** ReadDownloadingConf(const char * args)
 {
     int fd = open(args, O_RDONLY);
     

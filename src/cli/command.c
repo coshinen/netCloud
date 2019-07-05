@@ -2,9 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-#include "head.h"
+#include "command.h"
 
-void getCommand(pNode_t pNode, char ** argv)
+#include "threadhandler.h"
+
+void getCommand(pNode_t pNode, char* argv[])
 {
     int epfd = epoll_create(1);
     struct epoll_event ev, evs[2];
@@ -71,7 +73,7 @@ void getCommand(pNode_t pNode, char ** argv)
                     epoll_ctl(epfd, EPOLL_CTL_DEL, pNode->_sfd, &ev);
 
                     sleep(1);
-                    pNode->_sfd = scSocket(argv);
+                    pNode->_sfd = InitSocket(argv);
                     pNode->_flagCmd = 0;
                     
                     bzero(&ev, sizeof(struct epoll_event));
@@ -180,7 +182,7 @@ int selectCommand(char ** cmd, pNode_t pNode)
         pNode->_sfdTmp = pNode->_sfd;
         pthread_attr_init(&attr);
         pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-        pthread_create(&pthId, &attr, threadHandler, pNode);
+        pthread_create(&pthId, &attr, ThreadHandler, pNode);
         //return getsFile(pNode->_sfd, cmd[1]);
     } else if (!strcmp("puts", *cmd)) {
         pNode->_flagCmd = 'u';
@@ -189,7 +191,7 @@ int selectCommand(char ** cmd, pNode_t pNode)
         pNode->_sfdTmp = pNode->_sfd;
         pthread_attr_init(&attr);
         pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-        pthread_create(&pthId, &attr, threadHandler, pNode);
+        pthread_create(&pthId, &attr, ThreadHandler, pNode);
         //return putsFile(pNode->_sfd, cmd[1]);
     } else if (!strcmp("remove", *cmd)) {
         removeFile(pNode->_sfd, cmd[1]);
@@ -475,7 +477,7 @@ void sighandler(int signum)
 
 int getsFileAgain(int sfd, int fd, const char * fileName, off_t sizeFile, int fdTemp, const char * downloadPath, const char * strSizeFile, char * strTotalCur, const char * fileNameDownloading)
 {
-    char ** args = readDownloadingConf(fileNameDownloading);
+    char ** args = ReadDownloadingConf(fileNameDownloading);
 
     off_t sizeFileCur = atol(args[2]);
     sendN(sfd, (char*)&sizeFileCur, sizeof(off_t));

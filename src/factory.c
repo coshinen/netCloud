@@ -4,7 +4,7 @@
 
 #include "factory.h"
 
-void factoryInit(pFactory_t pFactory, int numThread, pthreadHandler_t threadHandler)
+void FactoryInit(pFactory_t pFactory, int numThread, pthreadHandler_t threadHandler)
 {
     taskQueInit(&pFactory->_que);
     taskQueInit(&pFactory->_queFile);
@@ -12,11 +12,9 @@ void factoryInit(pFactory_t pFactory, int numThread, pthreadHandler_t threadHand
     pFactory->_pThreadHandler= threadHandler;
     pFactory->_pThreadId = (pthread_t*)calloc(numThread, sizeof(pthread_t));
     pFactory->_numThread = numThread;
-}
 
-void factoryStart(pFactory_t pFactory)
-{
-    if (0 == pFactory->_flagStart) {
+    if (0 == pFactory->_flagStart)
+    {
         for (int idx = 0; idx != pFactory->_numThread; ++idx)
         {
             pthread_create(pFactory->_pThreadId + idx, NULL, pFactory->_pThreadHandler, pFactory);
