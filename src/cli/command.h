@@ -5,7 +5,20 @@
 #ifndef __COMMAND_H__
 #define __COMMAND_H__
 
-#include "head.h"
+#include <fcntl.h>
+
+typedef struct {
+    int _sfd, _sfdTmp;
+    char _fileName[64];
+    char _flagCmd;
+} Node_t, * pNode_t;
+
+typedef struct { // train modles
+    int _len; // head: the length of body
+    char _buf[1024]; // body: data
+} Train_t, * pTrain_t;
+
+static int sfdTmp = -1;
 
 void getCommand(pNode_t, char* argv[]);
 char ** parseCommand(const char*);

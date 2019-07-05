@@ -4,7 +4,12 @@
 
 #include "signupin.h"
 
-#include "head.h"
+#include "command.h"
+
+#include <stdio.h>
+#include <time.h>
+
+extern char bash[256];
 
 void ParseCommandStart(char * cmd)
 {

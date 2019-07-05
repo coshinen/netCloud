@@ -4,7 +4,10 @@
 
 #include "util.h"
 
-#include "head.h"
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <fcntl.h>
+#include <errno.h>
 
 int InitSocket(char ** argv)
 {

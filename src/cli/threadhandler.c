@@ -4,13 +4,15 @@
 
 #include "threadhandler.h"
 
-#include "head.h"
+#include "command.h"
 
 void * ThreadHandler(void * p)
 {
     pNode_t pNode = (pNode_t)p;
-puts("I am child thread");
-printf("%c\n", pNode->_flagCmd);
+
+    puts("I am child thread");
+    printf("%c\n", pNode->_flagCmd);
+
     if ('d' == pNode->_flagCmd) {
         getsFile(pNode->_sfdTmp, pNode->_fileName);
     } else if ('u' == pNode->_flagCmd) {

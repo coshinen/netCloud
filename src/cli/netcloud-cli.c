@@ -2,7 +2,10 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-#include "head.h"
+#include "command.h"
+
+#include <stdio.h>
+#include <signal.h>
 
 char bash[256] = {0};
 

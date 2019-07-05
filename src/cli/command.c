@@ -6,6 +6,19 @@
 
 #include "threadhandler.h"
 
+#include <stdio.h>
+#include <pthread.h>
+#include <sys/epoll.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <signal.h>
+
+extern char bash[256];
+static int idxBash = 0;
+static int FLAG = 0; // static作用域在单个.c文件中
+
 void getCommand(pNode_t pNode, char* argv[])
 {
     int epfd = epoll_create(1);
