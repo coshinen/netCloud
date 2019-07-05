@@ -102,7 +102,8 @@ int AppInit(int argc, char* argv[])
 #endif
     }
     // Set this early so that parameter interactions go to console
-    openlog(0, LOG_CONS | LOG_PID, LOG_LOCAL0);
+    if (!mapArgs.fPrinttoConsole)
+        openlog(0, LOG_CONS | LOG_PID, LOG_LOCAL0);
 
     WaitForShutdown();
     int sfd = InitSocket();

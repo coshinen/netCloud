@@ -11,6 +11,7 @@ typedef struct {
     char sConf[1024];
     char sDataDir[1024];
     _Bool fDaemon;
+    _Bool fPrinttoConsole;
     char sIP[16];
     int nConn;
     unsigned short nPort;

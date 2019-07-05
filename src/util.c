@@ -36,6 +36,8 @@ void ParseParameters(int argc, char* argv[])
             strcpy(mapArgs.sDataDir, strValue);
         else if (!strcmp(str, "-daemon"))
             mapArgs.fDaemon = atoi(strValue);
+        else if (!strcmp(str, "-printtoconsole"))
+            mapArgs.fPrinttoConsole = atoi(strValue);
         else if (!strcmp(str, "-ip"))
             strcpy(mapArgs.sIP, strValue);
         else if (!strcmp(str, "-conn"))
@@ -158,6 +160,8 @@ void ReadConfigFile(char* pathConfigFile)
 
         if (!strcmp(str, "daemon"))
             mapArgs.fDaemon = atoi(strValue);
+        else if (!strcmp(str, "printtoconsole"))
+            mapArgs.fPrinttoConsole = atoi(strValue);
         else if (!strcmp(str, "ip"))
             strcpy(mapArgs.sIP, strValue);
         else if (!strcmp(str, "conn"))
@@ -166,11 +170,11 @@ void ReadConfigFile(char* pathConfigFile)
             mapArgs.nPort = atoi(strValue);
         else if (!strcmp(str, "threads"))
             mapArgs.nThreads = atoi(strValue);
-        else if (!strcmp(str, "-mysqlusername"))
+        else if (!strcmp(str, "mysqlusername"))
             strcpy(mapArgs.sMysqlUsername, strValue);
-        else if (!strcmp(str, "-mysqlpassword"))
+        else if (!strcmp(str, "mysqlpassword"))
             strcpy(mapArgs.sMysqlPassword, strValue);
-        else if (!strcmp(str, "-mysqldb"))
+        else if (!strcmp(str, "mysqldb"))
             strcpy(mapArgs.sMysqlDB, strValue);
     }
 
