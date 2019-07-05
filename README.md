@@ -8,6 +8,7 @@ A customised protocol cloud storage.
 
 - [ ] code refactoring: logging system
 - [ ] code merge: server and client - move cli to src
+- [ ] replace mysql with bdb or leveldb
 - [ ] code refactoring: distribution like bitcoin
 - [ ] code refactoring: replace c with cpp
 
