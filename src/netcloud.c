@@ -42,18 +42,21 @@ int AppInit(int argc, char* argv[])
     ParseParameters(argc, argv);
 
     //process help and version before taking care about datadir
-    if (!strcmp(argv[1], "-?") || !strcmp(argv[1], "-h") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "-version"))
+    if (argc == 2)
     {
-        if (!strcmp(argv[1], "-version"))
+        if (!strcmp(argv[1], "-?") || !strcmp(argv[1], "-h") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "-version"))
         {
-            LicenseInfo();
-        }
-        else
-        {
-            HelpMessage();
-        }
+            if (!strcmp(argv[1], "-version"))
+            {
+                LicenseInfo();
+            }
+            else
+            {
+                HelpMessage();
+            }
 
-        return -1;
+            return -1;
+        }
     }
 
     GetDataDir();
