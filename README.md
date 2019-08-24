@@ -1,15 +1,6 @@
-# netCloud
-
-[![Build Status](https://travis-ci.org/mistydew/netCloud.svg?branch=master)](https://travis-ci.org/mistydew/netCloud)
-
-## What is netCloud?
+# netCloud [![Build Status](https://travis-ci.org/mistydew/netCloud.svg?branch=master)](https://travis-ci.org/mistydew/netCloud)
 
 A custom cloud storage.
-
-## License
-
-netCloud is released under the terms of the MIT license.
-See [LICENSE](LICENSE) for more information or see https://opensource.org/licenses/MIT.
 
 ## Todo
 
@@ -59,3 +50,8 @@ $ sudo apt install libmysqlclient-dev
 $ ./netcloud
 $ ./netcloud-cli
 ```
+
+## License
+
+netCloud is released under the terms of the MIT license.
+See [LICENSE](LICENSE) for more information or see https://opensource.org/licenses/MIT.
