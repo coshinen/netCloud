@@ -9,5 +9,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - name: dependencies
+      run: |
+        sudo apt install mysql-server mysql-client
+        sudo apt install libmysqlclient-dev
     - name: make
       run: make
