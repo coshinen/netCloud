@@ -1,6 +1,6 @@
 # netCloud
 
-![GitHub Actions workflow status](https://github.com/mistydew/netCloud/workflows/C/C++%20CI/badge.svg)
+![](https://github.com/mistydew/netCloud/workflows/C/C++%20CI/badge.svg)
 [![Build Status](https://travis-ci.org/mistydew/netCloud.svg?branch=master)](https://travis-ci.org/mistydew/netCloud)
 
 A custom cloud storage.
