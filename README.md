@@ -1,17 +1,13 @@
 # netCloud
 
 ![](https://github.com/mistydew/netCloud/workflows/C/C++%20CI/badge.svg)
-[![Build Status](https://travis-ci.org/mistydew/netCloud.svg?branch=master)](https://travis-ci.org/mistydew/netCloud)
 
-A custom cloud storage.
+A custom cloud storage server and client.
 
 ## Todo
 
-- [ ] code refactoring: logging system
 - [ ] code merge: server and client - move cli to src
-- [ ] replace mysql with bdb or leveldb
-- [ ] code refactoring: distribution like bitcoin
-- [ ] code refactoring: replace c with cpp
+- [ ] code refactoring: config, logging system, db (replace mysql with bdb or leveldb)
 
 ## To Build
 
